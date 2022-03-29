@@ -15,12 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from . import views
 
 """Notes from
 Vince: We're going to try to run most of our urls directly through this file. Features that have SUB url's can be hashed out in future meetings."""
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('recommend/', views.recommend, name='recommend'),
+    path('recommend_helper/', views.recommend_get, name='recommend_helper'),
+
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/
     #path('searchresults/', INCOMPLETE PATH),
