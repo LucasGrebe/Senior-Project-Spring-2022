@@ -17,11 +17,12 @@ class SearchForm(forms.Form):
     pass
 
 class CommentForm(forms.ModelForm):
-    created_by=User.id
+    created_by=User
+    name=User.username + str(User.id)
     body=forms.CharField(widget=forms.Textarea)
     class Meta:
         model=Comment
-        fields=('created_by','body')
+        fields=('name','body')
 
 class ArtistForm(forms.Form):
     artist = forms.CharField(widget=forms.TextInput(attrs={'size': '50'}))
