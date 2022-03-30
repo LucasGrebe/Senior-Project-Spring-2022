@@ -1,0 +1,62 @@
+{% extends 'base_msg.html' %}
+
+{% block title %}Messager{% endblock %}
+
+{% block content %}
+<br>
+    <center>
+        <h2>Messages</h2>
+    </center>
+<br>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable" role="alert">
+            <button class="close" data-dismiss="alert">
+                X
+            </button>
+            <center>{{ message }}</center>
+        </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <center>{{ message }}</center>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% if inbox %}
+<div class="container">
+    {% for msg in inbox %}
+    <div class="row border">
+        <div class=" col m-2 text-left font-weight-bold">From: {{ msg.sender }}</div>
+        <div class="col m-2 text-center font-weight-bold">{{ msg.subject }}</div>
+        <div class="col m-2 text-right font-weight-bold"> {{ msg.created_at|date:'D, M j, Y, f A' }}</div>
+    </div>
+        <div class="row border-left border-top border-right">
+            <div class="col m-2">{{ msg.text }}</div>
+        </div>
+        {% if msg.track_id %}
+        <div class="row border-left border-right">
+            <div class="col m-2 text-muted">{{ msg.sender }} recommended a song:</div>
+        </div>
+        <div class="row border-left border-right">
+            <div class="col m-2">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/{{ msg.track_id }}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row border mb-4">
+            <div class="col m-2 text-left"><a class="btn btn-secondary" href="{% url 'messager:replymessage' msg.sender msg.subject %}">Reply</a></div>
+            <div class="col m-2 text-right"><a class="btn btn-danger" href="{% url 'messager:deletemessage' msg.id %}">Delete</a></div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<center>
+    <a class="btn btn-primary btn-lg" href="{% url 'messager:writemessage' %}">Write a message</a>
+</center>
+<br>
+{% endblock %}
