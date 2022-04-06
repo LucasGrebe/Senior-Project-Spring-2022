@@ -14,12 +14,14 @@ sp = spotipy.Spotify(auth='BQBudGJkAEas3zrtctXFBRveiTFae3AIqOC', auth_manager=au
 def messages(request):
     context = {}
 
-    # temporary
+    # temporary login code
+    """
     logout(request)
     if not request.user.is_authenticated:
         user = authenticate(request, username="admin", password="admin")
         login(request, user)
-    
+    """
+
     context['inbox'] = Message.objects.filter(recipient = request.user.get_username()).order_by('-created_at')
     if not context['inbox']:
         djangomessages.info(request, ("Your inbox is empty. Send someone a message to strike up a conversation!"))
