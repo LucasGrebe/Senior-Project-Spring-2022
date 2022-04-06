@@ -5,7 +5,6 @@ from django.http import Http404,JsonResponse
 from .models import *
 from .forms import *
 from django.views.decorators.http import require_POST, require_GET
-import random
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'Profbeats.apps.ProfbeatsConfig',
     'messager.apps.MessagerConfig',
     'django.contrib.admin',
     'django.contrib.auth',

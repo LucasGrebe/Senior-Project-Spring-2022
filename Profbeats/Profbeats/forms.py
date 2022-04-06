@@ -1,7 +1,6 @@
-from socket import fromshare
-from xml.etree.ElementTree import Comment
+# from socket import fromshare
 from django import forms
-from .models import User
+from .models import User, Comment
 # NOTE: SOME MODELS MAY NEED TO BE IMPORTED DIRECTLY
 
 class CreateAccountForm(forms.Form):
@@ -18,7 +17,7 @@ class SearchForm(forms.Form):
 
 class CommentForm(forms.ModelForm):
     created_by=User
-    name=User.username + str(User.id)
+    name=User.username # + str(User.id)
     body=forms.CharField(widget=forms.Textarea)
     class Meta:
         model=Comment
