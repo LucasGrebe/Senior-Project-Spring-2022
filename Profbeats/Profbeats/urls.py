@@ -25,7 +25,7 @@ urlpatterns = [
     path('recommend/', views.recommend, name='recommend'),
     path('recommend_helper/', views.recommend_get, name='recommend_helper'),
     path('messager/', include('messager.urls')),
-    path('home/', views.lander_get, name='lander_get'),
+    path('', views.lander_get, name='lander_get'),
 
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/
