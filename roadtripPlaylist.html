@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProfBeats | Profile</title>
+    <title>ProfBeats | Playlists</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -12,7 +12,10 @@
 <body>
     <header>
         <div id="heading">
-            Your Profile
+            Roadtrip
+        </div>
+        <div id="subheading">
+            Your Playlist
         </div>
     </header>
 
@@ -50,18 +53,64 @@
         </div>
     </nav>
 
-    <div id="mainpage">
-        <div id="firstRow">
-            <div>
-                <img src="" alt="User's Profile Picture">
+    <div id="playlistsmainpage">
+        <br/><br/>
+
+        <div class="songrow lightgrayPlaylist">
+            <div class="songIconDiv"><img src="playIcon.png" class="songIcon"></div>
+            <div class="songtitle">Drive</div>
+            <div class="songinfo">
+                <div class="albumName">Superbloom</div>
+                <div class="artistName">Ashton Irwin</div>
             </div>
-            <div>
-                <h4>User's Name</h4>
-                <p>User Information</p>
+            <div class="songIconDiv"><img src="moreIcon.png" class="songIcon"></div>
+        </div>
+
+        <div class="songrow darkgrayPlaylist">
+            <div class="songIconDiv"><img src="playIcon.png" class="songIcon"></div>
+            <div class="songtitle">From Eden</div>
+            <div class="songinfo">
+                <div class="albumName">Hozier</div>
+                <div class="artistName">Hozier</div>
+            </div>
+            <div class="songIconDiv"><img src="moreIcon.png" class="songIcon"></div>
+        </div>
+
+        <div class="songrow lightgrayPlaylist">
+            <div class="songIconDiv"><img src="playIcon.png" class="songIcon"></div>
+            <div class="songtitle">Are you Ready?</div>
+            <div class="songinfo">
+                <div class="albumName">Il Ballo Della Vita</div>
+                <div class="artistName">Måneskin</div>
+            </div>
+            <div class="songIconDiv"><img src="moreIcon.png" class="songIcon"></div>
+        </div>
+
+        <br/><br/>
+
+        <div id="commentsdiv">
+            <div id="commentsheader">Comments</div>
+
+            <div class="comment">
+                <div class="commentText">Drove with this the other day, such an amazing playlist!</div>
+                <div class="commentInfo">
+                    <div class="commentUser">Luke Hemmings</div>
+                    <div class="commentTime">02/03/22 03:04:09</div>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="commentText">Never heard of any of these songs before, but now I listen to them everyday</div>
+                <div class="commentInfo">
+                    <div class="commentUser">Michael Clifford</div>
+                    <div class="commentTime">03/19/22 09:04:58</div>
+                </div>
             </div>
         </div>
+
+        <br/><br/>
     </div>
-    
+
 
     <!-- Footer -->
     <footer class="text-center text-lg-start bg-dark text-muted">
