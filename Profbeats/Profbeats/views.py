@@ -26,6 +26,16 @@ def find_artists(artist, song1, song2, song3, song4):
         tracks.append(track)
     return tracks
 
+def find_tracks(songs):
+    r_tracks = sp.recommendations(limit=100, seed_tracks=songs)
+    temp = r_tracks.get('tracks')
+    tracks = []
+    for i in range(len(temp)):
+        temp2 = temp[i]
+        track = temp2.get('id')
+        tracks.append(track)
+    return tracks
+
 def Search(INPUTDATA):
     pass
 
@@ -61,3 +71,12 @@ def recommend(request):
 def recommend_get(request):
     form = ArtistForm()
     return render(request, 'recommender/searchformRecommendations.html', {'form': form})
+
+@require_GET
+def lander_get(request):
+    tracksall = []
+    recently_listened_to = ['7CMVo848b9LsUtVavIoiXC', '5tUfJOqyiROxClednTF2FC', '7AYSl3u70hJ402o0u0gry5', '3jgHOTLHVfPI7twjEobWcC']
+    tracks = find_tracks(recently_listened_to)
+    for i in range(0, 1000, 4):
+        tracksall.append(tracks[i:i+4])
+    return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to})

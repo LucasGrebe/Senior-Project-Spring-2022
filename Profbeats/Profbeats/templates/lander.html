@@ -1,70 +1,41 @@
 {% extends 'base.html' %}
 
-<body>
+{% block title %} Music Search {% endblock %}
 
-<!Container for some kind of music feed, recent playlists or top playlists or something like that, links to our copy of the album page>
-<!This is a generic bootstrap carousel meaning THIS IS NOT FINAL CONTENT, should be a great choice for this kind of feed>
-<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-    </div>
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-        <img src="..." class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-            <h5>First slide label</h5>
-            <p>Some representative placeholder content for the first slide.</p>
-        </div>
-        </div>
-        <div class="carousel-item">
-        <img src="..." class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-            <h5>Second slide label</h5>
-            <p>Some representative placeholder content for the second slide.</p>
-        </div>
-        </div>
-        <div class="carousel-item">
-        <img src="..." class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-            <h5>Third slide label</h5>
-            <p>Some representative placeholder content for the third slide.</p>
-        </div>
-        </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
+{% block content %}
+<h1>Welcome to Profbeats</h1>
 
-<!Next two containers could maybe be columnized left and right?>
-<div class="container">
-    <!Container for some kind of comment feed for logged in users, or an alert/message telling them to login to view>
-    <div class="col">
-        <!Cards may be a good choice here>
-        <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-        <!Container for a different music feed, popular tracks maybe? Not sure what container type to use here>
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-    </div>
-    
-</body>
+{% if tracksall %}
+<table class="table">
+<tbody>
+<tr>
+<h1>Because you listend to: </h1>
+{% for track in recently_listened_to %}
+<td>
+<iframe src="https://open.spotify.com/embed/track/{{ track }}" width="300" height="380" 
+frameborder="10" allowtransparency="true" allow="encrypted-media"></iframe>
+</td>
+{% endfor %}
+</tr>
+</tbody>
+</table>
+<table class="table">
+<tbody>
+<h1>You may like: </h1>
+{% for tracks in tracksall %}
+<tr>
+{% for track in tracks %}
+<td>
+<iframe src="https://open.spotify.com/embed/track/{{ track }}" width="300" height="380" 
+frameborder="10" allowtransparency="true" allow="encrypted-media"></iframe>
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tr>
+</tbody>
+</table>
+
+{% endif %}
+
+{% endblock %}
