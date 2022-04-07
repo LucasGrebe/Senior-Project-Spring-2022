@@ -1,22 +1,24 @@
 *.log
 *.pot
 *.pyc
-*.cache
-__pycache__
-db.sqlite3
-temp/*
 .cache
+**/.cache
+__pycache__
+__pycache__/
+**/__pycache__/
+db.sqlite3
+temp/
 
 # Virtual environment
-devenvmac/*
-devenv/*
-myvirtualenvironment/*
+devenvmac/
+devenv/
+myvirtualenvironment/
 
 # Any static data files
 *.csv  
 
 # Migrations. FOR NOW, keep out of repo
-**/migrations/*
+**/migrations/
 
 # For those using PyCharm
 .idea/**/workspace.xml 
@@ -34,7 +36,7 @@ myvirtualenvironment/*
 *.iws /out/ 
 
 # Visual Studio Code
-.vscode/* 
+.vscode/
 .history
 
 # Mac
