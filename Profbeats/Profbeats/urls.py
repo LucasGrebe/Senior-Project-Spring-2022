@@ -25,6 +25,7 @@ urlpatterns = [
     path('recommend/', views.recommend, name='recommend'),
     path('recommend_helper/', views.recommend_get, name='recommend_helper'),
     path('messager/', include('messager.urls')),
+    path('advanced/', include('advanced.urls')),
     path('', views.lander_get, name='lander_get'),
 
     #path('home/', INCOMPLETE PATH),
