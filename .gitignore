@@ -1,6 +1,7 @@
 *.log
 *.pot
 *.pyc
+*.cache
 __pycache__
 db.sqlite3
 temp/*
@@ -38,3 +39,4 @@ myvirtualenvironment/*
 
 # Mac
 .DS_Store
+**/.DS_Store
