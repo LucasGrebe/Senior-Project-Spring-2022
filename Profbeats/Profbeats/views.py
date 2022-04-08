@@ -64,8 +64,13 @@ def updatePlaylistContent(request,playlistId):
     if request.method == 'POST':
         if 'post_comment' in request.POST:
             f_comment = CommentForm(request.POST)
+            new_comment=None
             if f_comment.is_valid():
-                f_comment.save()
+                new_comment=f_comment.save(commit=False)
+                new_comment.playlist=playlist
+                new_comment.save()
+            else:
+                raise Http404('Comment Failed to Post')
         if 'rate_playlist' in request.POST:
             f_prate = PlaylistRatingForm(request.POST)
             if f_prate.is_valid():

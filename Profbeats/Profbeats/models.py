@@ -56,7 +56,7 @@ class TRating(Model):
 class Comment(Model):
     playlist=ForeignKey(Playlist,on_delete=CASCADE,related_name='comments',blank=True)
     created_by=ForeignKey(User,on_delete=CASCADE,related_name='poster',blank=True)
-    name=TextField(max_length=30)
+    name=TextField(max_length=30,blank=True)
     body=TextField(max_length=250)
     created_on=DateTimeField(auto_now_add=True)
 
