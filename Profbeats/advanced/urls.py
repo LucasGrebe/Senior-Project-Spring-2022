@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     
     path('', views.advanced_get, name='advanced'),
-    path('results/', views.advanced_post, name='results'),
+    path('/results/', views.advanced_post, name='results'),
 
 ]
  
