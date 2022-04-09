@@ -3,7 +3,7 @@
 {% block title %} Advanced Search {% endblock %}
 
 {% block content %}
-<form method='post' action="/advanced/results/">
+<form method='post' action="/advanced_results/">
     {% csrf_token %}
     <br>
     <center>
@@ -46,6 +46,14 @@
 </form>
 <br>
 
+{% if not albums %}
+
+<br>
+    <div>
+        No resultds
+    </div>
+    <br>
+{% endif %}
 {% if albums %}
 <table class="table">
 <tbody>
