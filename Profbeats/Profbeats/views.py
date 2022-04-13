@@ -49,7 +49,8 @@ def createAccountForm(request):
     pass
 
 def loginForm(request):
-    pass
+    form = LoginForm()
+    return render(request, 'login.html', {'form': form})
 
 def createPlaylistForm(request):
     pass
@@ -75,7 +76,7 @@ def recommend_get(request):
     form = ArtistForm()
     return render(request, 'recommender/searchformRecommendations.html', {'form': form})
 
-@require_GET
+
 def lander_get(request):
     tracksall = []
     recently_listened_to = ['7CMVo848b9LsUtVavIoiXC', '5tUfJOqyiROxClednTF2FC', '7AYSl3u70hJ402o0u0gry5', '3jgHOTLHVfPI7twjEobWcC']

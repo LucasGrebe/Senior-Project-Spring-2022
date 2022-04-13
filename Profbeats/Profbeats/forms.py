@@ -1,13 +1,16 @@
 # from socket import fromshare
 from django import forms
 from .models import User, Comment
+from users import models as custUser
 # NOTE: SOME MODELS MAY NEED TO BE IMPORTED DIRECTLY
 
 class CreateAccountForm(forms.Form):
     pass
 
 class LoginForm(forms.Form):
-    pass
+    email = forms.CharField(widget=forms.TextInput)
+    password = forms.CharField(widget=forms.PasswordInput)
+    
 
 class PlaylistMakeForm(forms.Form):
     pass
