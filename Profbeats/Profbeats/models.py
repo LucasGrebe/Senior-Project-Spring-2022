@@ -26,6 +26,7 @@ class User(models.Model):
     owned_playlists=models.ForeignKey(Playlist,on_delete=models.CASCADE,related_name='playlists',blank=True)
 
 
+
 # Model of the track and it's fields. Note this is not final and can be subject to change
 # The track list locally stores all songs that belong to user-generated playlists (necessary if we cannot link accounts directly to spotify)
 class Track(models.Model):

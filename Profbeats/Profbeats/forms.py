@@ -29,3 +29,4 @@ class ArtistForm(forms.Form):
     song2 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
     song3 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
     song4 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
+
