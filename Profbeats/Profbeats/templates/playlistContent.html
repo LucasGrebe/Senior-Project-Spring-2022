@@ -1,16 +1,87 @@
 {% extends 'base.html' %}
+{% block content %}
 
-<!This is our generic bottom-level content page, to be filled out with PLAYLIST TITLE, PLAYLIST TYPE, TRACKS, COMMENTS, and POSSIBLY A SIMILAR CONTENT SIDEBAR>
-<!This page should be fed a PLAYLIST object and a list of it's associated COMMENTS, and if a recommendation system is included the necessary additional playlists>
-<!context vars: content, comments>
+<!This is our generic bottom-level content page, to be filled out with PLAYLIST TITLE, PLAYLIST TYPE, TRACKS, COMMENTS, and POSSIBLY A SIMILAR CONTENT SIDEBAR
+This page should be fed a PLAYLIST object, a list of it's TRACKS, and a list of it's associated COMMENTS, and if a recommendation system is included the necessary
+additional playlists.
+Context vars: content, comments, playlist>
+
 <body>
     <div>
-        <!FILLER FOR PLAYLIST DISPLAY ELEMENT>
+        <img src="{{playlist.img}}" class="img-fluid">
+        <br>
+        <form method='post' action="{% url 'content_display' playlist.id %}">
+            {% csrf_token %}
+            <center>
+                <h2>Rate this playlist!</h2>
+            </center>
+            <br>
+            Playlist Rating: {{playlist.aggRating}}
+            <br>
+            <input type="hidden" name="target" value="{{ playlist.id }}">
+            {{f_prate.rating}}
+            <br>
+            Rater: <br>
+            {{f_prate.prated_by}}
+            <br>
+            <button class="btn btn-primary btn-lg" type="submit" name="rate_playlist">Rate</button>
+        </form>
     </div>
-    <div>
-        <!Comment display space>
+    <table class="table">
+        <tbody>
+            <tr>
+                {% for song in content %}
+                <td>
+                    <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
+                    frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    <br>
+                    Song Rating: {{ song.aggRating }}
+                    <form method="post" action="{% url 'content_display' playlist.id %}">
+                        {% csrf_token %}
+                        <br>
+                        <input type="hidden" name="target" value="{{ song.id }}">
+                        {{f_trate.rating}}
+                        <br>
+                        Rater: <br>
+                        {{f_trate.trated_by}}
+                        <br>
+                        <button class="btn btn-primary btn-lg" type="submit" name="rate_track">Rate</button>
+                    </form>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% for comment in comments %}
+    <div class="comment" style="padding: 10px;">
+        <p class="font-weight-bold">
+            {{comment.created_by}}
+            <span class="text-muted font-weight-normal">
+                {{comment.created_on}}
+            </span>
+        </p>
+        {{comment.body|linebreaks}}
     </div>
-    <div>
-        <!Post comment space>
-    </div>
+    {% endfor %}
+    <form method='post' action="{% url 'content_display' playlist.id %}">
+        {% csrf_token %}
+        <br>
+        <center>
+            <h2>Join the conversation!</h2>
+        </center>
+        <br>
+        <div>
+            User: <br>
+            {{ f_comment.created_by }}
+        </div>
+        <br>
+        <div>
+            Comment: <br>
+            {{ f_comment.body }}
+        </div>
+        <br>
+        <button class="btn btn-primary btn-lg" type="submit" name="post_comment">Submit</button>
+        </form>
+        <br>
 </body>
+{%endblock%}

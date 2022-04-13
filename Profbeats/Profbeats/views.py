@@ -3,7 +3,6 @@ from .forms import *
 from django.shortcuts import render,get_object_or_404
 from django.http import Http404,JsonResponse
 from .models import *
-from .forms import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
 from spotipy import oauth2
@@ -57,6 +56,46 @@ def createPlaylistForm(request):
 
 def comments(request,playlistId,userId):
     pass
+
+
+### Universal Handler Function for the playlistContent.html webpage ###
+def updatePlaylistContent(request,playlistId):
+    playlist=Playlist.objects.get(pk=playlistId)
+    f_comment = CommentForm(None)
+    f_prate = PlaylistRatingForm(None)
+    f_trate = TrackRatingForm(None)
+
+    if request.method == 'POST':
+        if 'post_comment' in request.POST:
+            f_comment = CommentForm(request.POST)
+            new_comment=None
+            if f_comment.is_valid():
+                new_comment=f_comment.save(commit=False)
+                new_comment.playlist=playlist
+                new_comment.save()
+            else:
+                raise Http404('Comment Failed to Post')
+        if 'rate_playlist' in request.POST:
+            f_prate = PlaylistRatingForm(request.POST)
+            if f_prate.is_valid():
+                f_prate.save()
+        if 'rate_track' in request.POST:
+            f_trate = TrackRatingForm(request.POST)
+            if f_trate.is_valid():
+                f_trate.save()
+
+    ### REFERENCE KEY FOR FRONTEND VARIABLES ###
+    ### You can access ALL FIELDS of playlist using playlist.fieldname in .html! ###
+    context = {
+        'f_comment':f_comment,
+        'f_prate':f_prate,
+        'f_trate':f_trate,
+        'content':playlist.tracks.all(),
+        'comments':playlist.comments.all(),
+        'playlist':playlist,
+    }
+    return render(request,'playlistContent.html',context)
+
 
 @require_POST
 def recommend(request):
