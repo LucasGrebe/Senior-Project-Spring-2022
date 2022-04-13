@@ -13,10 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from re import template
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
+from django.contrib.auth import views as auth_views
 """Notes from
 Vince: We're going to try to run most of our urls directly through this file. Features that have SUB url's can be hashed out in future meetings."""
 
@@ -27,6 +28,10 @@ urlpatterns = [
     path('messager/', include('messager.urls')),
     path('advanced/', include('advanced.urls')),
     path('', views.lander_get, name='lander_get'),
+  # path('login', views.loginForm, name='login'),
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(template_name='lander.html'), name='logout'),
+    path('playlistContent/<playlistId>',views.updatePlaylistContent,name='content_display'),
 
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/
