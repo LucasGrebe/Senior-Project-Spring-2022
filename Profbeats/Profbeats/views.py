@@ -5,18 +5,21 @@ from django.http import Http404,JsonResponse
 from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-from spotipy.oauth2 import SpotifyOAuth
+from spotipy import oauth2
+
 cid = '44dbdabeed3d42eba9abf16a4159c53e'
 secret = '139765ae1bb445b2abfb6799e1698072'
-client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
-sp = spotipy.Spotify(auth_manager=client_credentials_manager)
+client_credentials_manager = oauth2.SpotifyClientCredentials(client_id=cid, client_secret=secret)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
+spOAuth = oauth2.SpotifyOAuth(client_id=cid, client_secret=secret, redirect_uri='http://127.0.0.1:8000/')
+
 
 def find_artists(artist, song1, song2, song3, song4):
     to_pass = 'artist,album,track,playlist,show,episode'
     results = sp.search(q='artist:' + artist, type=to_pass)
     items = results['artists']['items']
-    r_tracks = sp.recommendations(seed_artists=[items[0]['id']], seed_tracks=[song1,song2,song3,song4])
+    r_tracks = sp.recommendations(seed_artists=[items[0]['id']], seed_tracks=[song1,song2,song3,song4], seed_genres=['rock'])
     temp = r_tracks.get('tracks')
     tracks = []
     for i in range(len(temp)):
@@ -45,7 +48,8 @@ def createAccountForm(request):
     pass
 
 def loginForm(request):
-    pass
+    form = LoginForm()
+    return render(request, 'login.html', {'form': form})
 
 def createPlaylistForm(request):
     pass
@@ -111,7 +115,7 @@ def recommend_get(request):
     form = ArtistForm()
     return render(request, 'recommender/searchformRecommendations.html', {'form': form})
 
-@require_GET
+
 def lander_get(request):
     tracksall = []
     recently_listened_to = ['7CMVo848b9LsUtVavIoiXC', '5tUfJOqyiROxClednTF2FC', '7AYSl3u70hJ402o0u0gry5', '3jgHOTLHVfPI7twjEobWcC']

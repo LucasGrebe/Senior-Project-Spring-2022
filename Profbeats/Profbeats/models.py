@@ -21,6 +21,7 @@ class Playlist(Model):
     tracks=ManyToManyField(Track,related_name='tracks',blank=True)
 
 
+
 # compute aggRating on save: aggRating = aggRating + (val-aggRating)/count(Obj.XRate)
 # The following child ratings have modified save methods, they AUTOMATICALLY UPDATE the aggregated average rating of their parent Track or Playlist when created.
 
@@ -49,6 +50,7 @@ class TRating(Model):
         rCount = self.target.tratings.count()
         self.target.aggRating = agg + (self.rating - agg)/rCount
         self.target.save()
+
 
 
 # Model of the comment and it's fields. Note this is not final and can be subject to change
