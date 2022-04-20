@@ -127,8 +127,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
-AUTHENTICATION_BACKENDS = (
-    'users.managers.CustomUserManager',
-    
-)
-LOGIN_REDIRECT_URL = ""
+LOGIN_REDIRECT_URL = 'lander_get'
