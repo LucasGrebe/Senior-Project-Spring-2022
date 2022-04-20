@@ -3,7 +3,7 @@
 {% block title %} Advanced Search {% endblock %}
 
 {% block content %}
-<form method='post' action="/advanced_results/">
+<form method='post' action="/advanced/advanced_results/">
     {% csrf_token %}
     <br>
     <center>
@@ -50,7 +50,7 @@
 
 <br>
     <div>
-        No resultds
+        No results
     </div>
     <br>
 {% endif %}
