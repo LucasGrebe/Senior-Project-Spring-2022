@@ -1,4 +1,6 @@
 from django import forms
+from Profbeats.models import Comment, PRating,Playlist, TRating, Track
+from users.models import CustomUser as User
 
 SORT_CRITERIA = [
         ('name', 'Name'),
@@ -38,6 +40,15 @@ Sort by:
 """
 
 class AdvancedForm(forms.Form):
+    owner=forms.EmailField(required=False,widget=forms.TextInput(attrs={'size': '50'}))
+    title=forms.CharField(required=False,widget=forms.TextInput(attrs={'size': '50'}))
+    #img=DEFAULT IMAGE HERE
+    aggRating=forms.FloatField(required=False, max_value=5.0,min_value=0.0,initial=0.0)
+    class Meta:
+        model=Playlist
+        fields=('title','spotify_link','img','aggRating','owner','tracks')
+
+class AdvancedSongForm(forms.Form):
     sort = forms.CharField(required=False,label='Sort', widget=forms.Select(choices=SORT_CRITERIA))
     #genre = forms.CharField(widget=forms.TextInput(attrs={'size': '50'}))
     tempo = forms.CharField(required=False,label='Tempo', widget=forms.Select(choices=TEMPO_CRITERIA))
