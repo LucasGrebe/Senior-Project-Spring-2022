@@ -32,14 +32,29 @@ def find_spotipy(artist):
 
 
 
-def advanced_find(owner, title):
-    try: 
-        user = User.objects.get(email=owner)
-        return list(user.playlists.all())
-    except:
-        return None
+def advanced_find(owner = None, title = None):
 
-
+    if(len(owner) != 0):
+        print("bOwner: ", len(owner))
+        try: 
+            results = User.objects.get(email=owner)
+            print(type(results.playlists.all()))
+            return list(results.playlists.all())
+        except:
+            return None
+    elif(len(title) != 0):
+       
+        
+        try: 
+            result = Playlist.objects.get(title=title)
+            results = []
+            results.append(result)
+            
+            return results
+        except:
+            print("Noothing found")
+            return None
+    return None
 
 @require_POST
 def advanced_post(request):
@@ -56,12 +71,13 @@ def advanced_post(request):
             owner,
             title
     )
-        content = []
-        for playlist in answer:
-            content.append(playlist.tracks.all()[0])
-
-        print(content[0].id)
-        return render(request, 'advanced/advanced.html', {'form': form, 'playlists': answer, 'content': content})
+        playlists = {}
+        if(answer is not None):
+            for playlist in answer:
+                playlists[playlist] = list(playlist.tracks.all())
+        
+        
+        return render(request, 'advanced/advanced.html', {'form': form, 'playlists': playlists})
     else:
         answer = 3
         raise Http404('Form was invalid')

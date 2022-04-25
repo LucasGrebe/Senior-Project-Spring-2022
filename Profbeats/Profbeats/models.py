@@ -19,7 +19,7 @@ class Playlist(Model):
     aggRating=FloatField()
     owner=ForeignKey(User,on_delete=CASCADE,related_name='playlists',blank=True,null=True)
     tracks=ManyToManyField(Track,related_name='tracks',blank=True)
-
+    objects = Manager()
 
 
 # compute aggRating on save: aggRating = aggRating + (val-aggRating)/count(Obj.XRate)
