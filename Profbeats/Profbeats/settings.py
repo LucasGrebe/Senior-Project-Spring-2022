@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'Profbeats.apps.ProfbeatsConfig',
+    'advanced.apps.AdvancedConfig',
     'messager.apps.MessagerConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',

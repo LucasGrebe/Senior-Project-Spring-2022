@@ -361,17 +361,27 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="search.html">Search Page</a>
+                            <a class="nav-link" href="{% url 'advsearch' %}">Advanced Search</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.html">Profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="playlists.html">Playlists</a>
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            <a class="nav-link" href="{% url 'messager:messages' %}">Messager</a>
                         </li>
+                        
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+
+                     {% else %}
+                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                     {% endif %}
                         
                         <!--
                         <li class="nav-item">
@@ -391,7 +401,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
     <!--
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Profbeats</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -409,7 +419,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
             <a class="nav-link" href="{% url 'messager:messages' %}">Messager</a>
           </li>
           <li class="nav-item dropdown">
-            //DROPDOWN LINK AND SUBACTIONS HERE, TBD
+
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown
             </a>
@@ -430,6 +440,10 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
+
+        <a class="nav-link" href="{% url 'advsearch' %}">Advanced</a>
+          </li>
+          <li class="nav-item dropdown">
       </div>
     </div>
     <a class="nav-link" href="{% url 'login' %}">Login</a>
