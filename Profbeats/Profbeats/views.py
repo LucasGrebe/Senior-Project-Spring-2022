@@ -6,6 +6,11 @@ from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
 
+from django.contrib.auth import logout
+
+
+
+
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
@@ -113,6 +118,12 @@ def loginForm(request):
     form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
+def logout_view(request):
+    logout(request)
+    # Redirect to a success page.
+
+
+    
 def createPlaylistForm(request):
     pass
 

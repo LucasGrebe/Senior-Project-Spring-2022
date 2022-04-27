@@ -5,21 +5,21 @@ from users.models import CustomUser as User
 
 # Model of the track and it's fields. Note this is not final and can be subject to change
 # The track list locally stores all songs that belong to user-generated playlists (necessary if we cannot link accounts directly to spotify)
-class Track(Model):
+class Track(models.Model):
     id=CharField(max_length=50,primary_key=True)
     aggRating=FloatField()
 
 
 # Model of a playlist and it's fields. Note this is not final and can be subject to change
 # A playlist without a spotify-link is a NATIVE playlist. Many TRACKS can be used by many PLAYLISTS. Many RATINGS can belong to SINGLE playlists
-class Playlist(Model):
+class Playlist(models.Model):
     title=CharField(max_length=30)
     spotify_link=URLField(blank=True,null=True)
     img=ImageField()
     aggRating=FloatField()
     owner=ForeignKey(User,on_delete=CASCADE,related_name='playlists',blank=True,null=True)
     tracks=ManyToManyField(Track,related_name='tracks',blank=True)
-
+    #objects = Manager()
 
 
 # compute aggRating on save: aggRating = aggRating + (val-aggRating)/count(Obj.XRate)
@@ -67,6 +67,7 @@ class Comment(Model):
 
     def __str__(self):
         return 'Comment {} by {}'.format(self.body,self.created_by.username)
+
 class Musicdata(models.Model):
     acousticness = models.FloatField()
     artists = models.TextField()

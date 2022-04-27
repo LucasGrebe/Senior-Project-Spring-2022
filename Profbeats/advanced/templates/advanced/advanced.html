@@ -46,13 +46,15 @@ Here ya go
     </div>
     <br>
   
-    {% for playlist in playlists %}
+    {% for playlist, content in playlists.items %}
 
     <body>
         <div>
-            <img src="{{playlist.img}}" class="img-fluid">
+            <img src="{{ playlist.img }}" class="img-fluid">
             <br>
             Title: {{ playlist.title }}
+            <br>
+            Owner: {{ playlist.owner }}
             <form method='post' action="{% url 'content_display' playlist.id %}">
                 {% csrf_token %}
                 <center>
@@ -73,6 +75,7 @@ Here ya go
         <table class="table">
             <tbody>
                 <tr>
+                    {% firstof playlist as playkey %}
                     {% for song in content %}
                     
                    The song id is {{ song.id }}
