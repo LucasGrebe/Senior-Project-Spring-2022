@@ -1,17 +1,14 @@
 # from socket import fromshare
 from django import forms
 from users.models import CustomUser as User
+import users.forms as uforms
 from .models import Comment, PRating,Playlist, TRating, Track
 # NOTE: SOME MODELS MAY NEED TO BE IMPORTED DIRECTLY
-
-class CreateAccountForm(forms.Form):
-    pass
 
 class LoginForm(forms.Form):
     email = forms.CharField(widget=forms.TextInput)
     password = forms.CharField(widget=forms.PasswordInput)
     
-
 class TrackForm(forms.Form):
     aggRating=forms.FloatField(max_value=5.0,min_value=0.0,initial=0.0)
     class Meta:
@@ -35,9 +32,6 @@ class TrackRatingForm(forms.ModelForm):
     class Meta:
         model=TRating
         fields=('rating','trated_by','target')
-
-class SearchForm(forms.Form):
-    pass
 
 class CommentForm(forms.ModelForm):
     body=forms.CharField(widget=forms.Textarea)

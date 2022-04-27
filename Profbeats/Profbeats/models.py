@@ -3,6 +3,15 @@ from django.db.models import *
 from users.models import CustomUser as User
 
 
+# Models the advanced user profile settings and features
+class UserProfile(Model):
+    user=OneToOneField(User,on_delete=CASCADE,related_name='profile')
+
+    THEMES=[('light','LIGHT'),('dark','DARK')]
+    themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
+    friendList=ManyToManyField(User,related_name='friends',blank=True)
+
+
 # Model of the track and it's fields. Note this is not final and can be subject to change
 # The track list locally stores all songs that belong to user-generated playlists (necessary if we cannot link accounts directly to spotify)
 class Track(models.Model):
@@ -18,8 +27,18 @@ class Playlist(models.Model):
     img=ImageField()
     aggRating=FloatField()
     owner=ForeignKey(User,on_delete=CASCADE,related_name='playlists',blank=True,null=True)
-    tracks=ManyToManyField(Track,related_name='tracks',blank=True)
-    #objects = Manager()
+    tracks=ManyToManyField(Track,through='TPR_Meta',related_name='tracks',blank=True)
+
+
+# Meta class representing the relationship between tracks and playlists. (T)rack-(P)laylist-(R)elationship Meta class
+# Each TPR_Meta represents the relationship between a track and a playlist, and features the time it was added to the list.
+class TPR_Meta(Model):
+    track=ForeignKey(Track,on_delete=CASCADE,related_name='relatedPlaylists')
+    playlist=ForeignKey(Playlist,on_delete=CASCADE,related_name='relatedTracks')
+    added_on=DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together=[['track','playlist']]
 
 
 # compute aggRating on save: aggRating = aggRating + (val-aggRating)/count(Obj.XRate)
