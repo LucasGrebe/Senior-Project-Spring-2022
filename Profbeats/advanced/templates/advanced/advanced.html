@@ -53,6 +53,8 @@ Here ya go
             <img src="{{ playlist.img }}" class="img-fluid">
             <br>
             Title: {{ playlist.title }}
+            <br>
+            Owner: {{ playlist.owner }}
             <form method='post' action="{% url 'content_display' playlist.id %}">
                 {% csrf_token %}
                 <center>

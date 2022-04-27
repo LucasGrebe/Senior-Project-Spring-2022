@@ -32,30 +32,39 @@ def find_spotipy(artist):
 
 
 
-def advanced_find(owner = None, title = None):
+def advanced_find(owner, title):
 
     if(len(owner) != 0):
-        print("bOwner: ", len(owner))
+        
         try: 
             results = User.objects.get(email=owner)
             print(type(results.playlists.all()))
-            return list(results.playlists.all())
+            results = results.playlists.all()
         except:
+            print(owner, " not found")
             return None
-    elif(len(title) != 0):
-       
-        
-        try: 
-            result = Playlist.objects.get(title=title)
-            results = []
-            results.append(result)
-            
-            return results
-        except:
-            print("Noothing found")
-            return None
-    return None
 
+        if(len(title) != 0):
+            print(type(results))
+            try: 
+                results = results.filter(title=title)
+                
+            except:
+                print("Noothing found")
+                return None
+        return results
+    
+    else:
+        if(len(title) != 0):
+        
+            try: 
+                results = Playlist.objects.filter(title=title)
+                
+            except:
+                print("Noothing found")
+                return None
+        return results
+    return None
 @require_POST
 def advanced_post(request):
      # create a form instance and populate it with data from the request:
