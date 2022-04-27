@@ -368,8 +368,9 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="playlists.html">Playlists</a>
-                    
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'messager:messages' %}">Messager</a>
+                        </li>
                         {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
