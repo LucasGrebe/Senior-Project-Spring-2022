@@ -3,30 +3,31 @@
 {% block title %} Advanced Search {% endblock %}
 
 {% block content %}
-<form method='post' action="{% url 'results' %}">
-    {% csrf_token %}
-    <br>
-    <center>
-        <h2>Playlist Search</h2>
-    </center>
-    
-    
-    <br>
-    <div>
-        Playlist Owner: {{ form.owner }}
-    </div>
-    <br>
-    
-    <br>
-    <div>
-        Playlist Title: {{ form.title }}
-    </div>
-    <br>
-    
- 
-    <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+<div id="advancedFormdiv">
+    <form id="advancedForm" method='post' action="{% url 'results' %}">
+        {% csrf_token %}
+        <br>
+        <center>
+            <h2>Playlist Search</h2>
+        </center>
+        <br/>
 
-</form>
+        <table id="advancedFormTable">
+            <tr>
+                <td>Playlist Owner : </td>
+                <td>{{ form.owner }}</td>
+            </tr>
+            <tr>
+                <td>Playlist Title : </td>
+                <td>{{ form.title }}</td>
+            </tr>
+        </table>
+    
+        <br/>
+        <button class="btn btn-dark btn-lg" type="submit">Submit</button>
+
+    </form>
+</div>
 <br>
 
 {% if not playlists %}
@@ -90,7 +91,7 @@ Here ya go
                             Rater: <br>
                             {{f_trate.trated_by}}
                             <br>
-                            <button class="btn btn-primary btn-lg" type="submit" name="rate_track">Rate</button>
+                            <button class="btn btn-primary btn-light" type="submit" name="rate_track">Rate</button>
                         </form>
                     </td>
                     {% endfor %}
