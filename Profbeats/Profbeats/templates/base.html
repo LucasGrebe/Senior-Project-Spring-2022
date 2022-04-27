@@ -234,12 +234,25 @@ a:visited {
     text-decoration: none;
 }
 
-#formdiv {
+#loginFormdiv {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 9vw;
+}
+
+#advancedFormdiv, #advancedForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2vw;
+}
+
+#advancedFormTable td{
+    padding: .5vw;
+    padding-left: .5vw;
 }
 
 .playlistinfo {
@@ -369,7 +382,12 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                         <li class="nav-item">
                             <a class="nav-link" href="playlists.html">Playlists</a>
                         </li>
-                       
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'messager:messages' %}">Messaging</a>
+                        </li>
                         
                         <!--
                         <li class="nav-item">
