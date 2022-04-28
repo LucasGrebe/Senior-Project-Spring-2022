@@ -28,10 +28,10 @@ urlpatterns = [
     path('messager/', include('messager.urls')),
     path('search/', include('advanced.urls')),
     path('', views.lander_get, name='lander_get'),
-  # path('login', views.loginForm, name='login'),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(template_name='lander.html'), name='logout'),
     path('playlistContent/<playlistId>',views.updatePlaylistContent,name='content_display'),
+    path('playlist/createPlaylist/',views.createPlaylist,name='create_playlist'),
 
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/

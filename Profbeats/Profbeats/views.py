@@ -1,16 +1,12 @@
 from re import A
 from .forms import *
 from django.shortcuts import render,get_object_or_404
-from django.http import Http404,JsonResponse
+from django.http import Http404, HttpResponseRedirect,JsonResponse
 from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
 
 from django.contrib.auth import logout
-
-
-
-
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
@@ -45,7 +41,7 @@ def find_tracks(songs):
         tracks.append(track)
     return tracks
 
-def createAccountForm(request):
+def createAccount(request):
     pass
 
 def loginForm(request):
@@ -56,14 +52,30 @@ def logout_view(request):
     logout(request)
     # Redirect to a success page.
 
+def createPlaylist(request):
+    f_playlist = PlaylistForm(request)
+    new_playlist = f_playlist.save(commit=False)
+    new_playlist.title="Untitled"
+    new_playlist.aggRating=0.0
+    new_playlist.image=None
+    new_playlist.owner=request.user
+    new_playlist.tracks=None
+    new_playlist.save()
+    return HttpResponseRedirect(request.path_info)
 
-    
-def createPlaylistForm(request):
+def addToPlaylist(request):
+    if request.method == 'POST':
+        f_TPR = AddToPlaylistForm(request.POST)
+        new_TPR = None
+        if f_TPR.is_valid():
+            new_TPR=f_TPR.save(commit=False)
+            new_TPR.save()
+        else:
+            raise Http404('Cannot add the same song to a playlist twice')
+    return HttpResponseRedirect(request.path_info)
+
+def updatePlaylist(request):
     pass
-
-def comments(request,playlistId,userId):
-    pass
-
 
 ### Universal Handler Function for the playlistContent.html webpage ###
 def updatePlaylistContent(request,playlistId):

@@ -19,9 +19,6 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 spOAuth = oauth2.SpotifyOAuth(client_id=cid, client_secret=secret, redirect_uri='http://127.0.0.1:8000/')
 
 
-import random
-
-
     
 def find_spotipy(artist):
     to_pass = 'artist,album,track,playlist,show,episode'
