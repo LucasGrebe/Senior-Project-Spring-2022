@@ -5,16 +5,12 @@ from django.http import Http404,JsonResponse
 from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
-
 from django.contrib.auth import logout
-
-
-
-
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
 from spotipy import oauth2
+
 cid = '44dbdabeed3d42eba9abf16a4159c53e'
 secret = '139765ae1bb445b2abfb6799e1698072'
 client_credentials_manager = oauth2.SpotifyClientCredentials(client_id=cid, client_secret=secret)
