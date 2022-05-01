@@ -46,7 +46,5 @@ class ArtistForm(forms.Form):
     song3 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
     song4 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
 
-class FriendRequestForm(forms.ModelForm):
-    class Meta:
-        model = FriendRequest
-        fields = ('sender','recipient')
+class FriendRequestForm(forms.Form):
+    recipient = forms.CharField(widget=forms.TextInput)

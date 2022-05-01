@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import *
 from users.models import CustomUser as User
 
-
 # Models the advanced user profile settings and features
 class UserProfile(Model):
     user=OneToOneField(User,on_delete=CASCADE,related_name='profile')
@@ -10,14 +9,13 @@ class UserProfile(Model):
     THEMES=[('light','LIGHT'),('dark','DARK')]
     themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
     friendList=ManyToManyField(User,related_name='friends',blank=True)
-
+    friendRequests = []
 
 # Model of the track and it's fields. Note this is not final and can be subject to change
 # The track list locally stores all songs that belong to user-generated playlists (necessary if we cannot link accounts directly to spotify)
 class Track(models.Model):
     id=CharField(max_length=50,primary_key=True)
     aggRating=FloatField()
-
 
 # Model of a playlist and it's fields. Note this is not final and can be subject to change
 # A playlist without a spotify-link is a NATIVE playlist. Many TRACKS can be used by many PLAYLISTS. Many RATINGS can belong to SINGLE playlists
@@ -70,8 +68,6 @@ class TRating(Model):
         self.target.aggRating = agg + (self.rating - agg)/rCount
         self.target.save()
 
-
-
 # Model of the comment and it's fields. Note this is not final and can be subject to change
 # When comments are generated, they are linked to a PLAYLIST. This relationship is necessary for functionality
 class Comment(Model):
@@ -109,5 +105,5 @@ class Musicdata(models.Model):
     year = models.IntegerField()
 
 class FriendRequest(models.Model):
-    sender=ForeignKey(User,on_delete=CASCADE)
-    recipient=ForeignKey(User,on_delete=CASCADE)
+    sender=ForeignKey(User,related_name='sender',on_delete=CASCADE)
+    recipient=ForeignKey(User,related_name='recipient',on_delete=CASCADE)

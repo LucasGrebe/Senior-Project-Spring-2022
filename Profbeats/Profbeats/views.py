@@ -205,15 +205,16 @@ def profile(request):
 
     context = {}
     form = FriendRequestForm()
-
     if request.method == 'POST':
         form = FriendRequestForm(request.POST)
-
         if form.is_valid():
-            friendrequest = form.save(commit=False)
-            friendrequest.save()
-            djangomessages.success(request, ("Your friend request was sent."))
-
+            if User.objects.get(username=form.recipient).exists() and request.user.get_username() is not form.recipient:
+                sender = request.user
+                recipient = User.objects.get(username = form.recipient)
+                fr = FriendRequest(sender, recipient)
+                fr.save()
+                djangomessages.success(request, ("Your friend request was sent."))
+        
         else:
             print(form.errors.as_data())
 
