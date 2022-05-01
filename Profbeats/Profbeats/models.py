@@ -109,5 +109,5 @@ class Musicdata(models.Model):
     year = models.IntegerField()
 
 class FriendRequest(models.Model):
-    sender=ForeignKey(User,on_delete=CASCADE,blank=True)
+    sender=ForeignKey(User,on_delete=CASCADE)
     recipient=ForeignKey(User,on_delete=CASCADE)
