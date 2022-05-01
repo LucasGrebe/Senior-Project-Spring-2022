@@ -32,7 +32,7 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(template_name='lander.html'), name='logout'),
     path('playlistContent/<playlistId>',views.updatePlaylistContent,name='content_display'),
-
+    path('profile/', views.profile, name='profile')
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/
     #path('searchresults/', INCOMPLETE PATH),

@@ -107,3 +107,7 @@ class Musicdata(models.Model):
     tempo = models.FloatField()
     valence = models.FloatField()
     year = models.IntegerField()
+
+class FriendRequest(models.Model):
+    sender=ForeignKey(User,on_delete=CASCADE,blank=True)
+    recipient=ForeignKey(User,on_delete=CASCADE)

@@ -1,10 +1,10 @@
-from re import A
 from .forms import *
-from django.shortcuts import render,get_object_or_404
-from django.http import Http404,JsonResponse
+from django.shortcuts import render,redirect
+from django.http import Http404
 from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
+from django.contrib import messages as djangomessages
 
 from django.contrib.auth import logout
 
@@ -188,7 +188,6 @@ def recommend_get(request):
     form = ArtistForm()
     return render(request, 'recommender/searchformRecommendations.html', {'form': form})
 
-
 def lander_get(request):
     tracksall = []
     recently_listened_to = ['7CMVo848b9LsUtVavIoiXC', '5tUfJOqyiROxClednTF2FC', '7AYSl3u70hJ402o0u0gry5', '3jgHOTLHVfPI7twjEobWcC']
@@ -196,3 +195,27 @@ def lander_get(request):
     for i in range(0, 1000, 4):
         tracksall.append(tracks[i:i+4])
     return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to})
+
+def profile(request):
+    # You need to be logged in to view your profile.
+    # Redirect to the login page if the user is not logged in.
+    if not request.user.is_authenticated:
+        djangomessages.warning(request, ("You need to be logged in to view your profile."))
+        return redirect('login')
+
+    context = {}
+    form = FriendRequestForm()
+
+    if request.method == 'POST':
+        form = FriendRequestForm(request.POST)
+
+        if form.is_valid():
+            friendrequest = form.save(commit=False)
+            friendrequest.save()
+            djangomessages.success(request, ("Your friend request was sent."))
+
+        else:
+            print(form.errors.as_data())
+
+    context['form'] = form
+    return render(request, 'profile.html', context)
