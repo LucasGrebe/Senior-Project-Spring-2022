@@ -209,9 +209,15 @@ def profile(request):
             if User.objects.filter(email=formrecipient).exists():
                 if request.user.get_username() != formrecipient:
                     recipient = User.objects.get(email = formrecipient)
-                    fr = FriendRequest(sender=request.user, recipient=recipient)
-                    fr.save()
-                    djangomessages.success(request, ("Your friend request was sent."))
+                    if recipient not in request.user.profile.friendList.all():
+                        if not FriendRequest.objects.filter(sender=request.user, recipient=recipient).exists():
+                            fr = FriendRequest(sender=request.user, recipient=recipient)
+                            fr.save()
+                            djangomessages.success(request, ("Your friend request was sent."))
+                        else:
+                            djangomessages.warning(request, ("You've already sent a friend request to that user."))
+                    else:
+                        djangomessages.warning(request, ("You're already friends with that user."))
                 else:
                     djangomessages.warning(request, ("You can't send a friend request to yourself."))
             else:
@@ -221,6 +227,7 @@ def profile(request):
             print(form.errors.as_data())
 
     context['form'] = form
+    context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
     return render(request, 'profile.html', context)
 
 def deleteFriend(request, friendId):
