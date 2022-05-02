@@ -22,37 +22,6 @@ class Playlist(models.Model):
     tracks=ManyToManyField(Track,through='TPR_Meta',related_name='tracks',blank=True)
 
 
-# Models the advanced user profile settings and features
-class UserProfile(Model):
-    user=OneToOneField(User,on_delete=CASCADE,related_name='profile')
-
-    THEMES=[('light','LIGHT'),('dark','DARK')]
-    themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
-    friendList=ManyToManyField(User,related_name='friends',blank=True)
-    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True)
-    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True)
-
-    @cached_property
-    def favorites(self):
-        favorites,created=Playlist.objects.get_or_create(owner=self,aggRating=0.0,title='Favorites')
-        return favorites
-    @cached_property
-    def recents(self):
-        recents,created=Playlist.objects.get_or_create(owner=self,aggRating=0.0,title='Recents')
-        return recents
-
-
-# Meta class representing the relationship between tracks and playlists. (T)rack-(P)laylist-(R)elationship Meta class
-# Each TPR_Meta represents the relationship between a track and a playlist, and features the time it was added to the list.
-class TPR_Meta(Model):
-    track=ForeignKey(Track,on_delete=CASCADE,related_name='relatedPlaylists')
-    playlist=ForeignKey(Playlist,on_delete=CASCADE,related_name='relatedTracks')
-    added_on=DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together=[['track','playlist']]
-
-
 # compute aggRating on save: aggRating = aggRating + (val-aggRating)/count(Obj.XRate)
 # The following child ratings have modified save methods, they AUTOMATICALLY UPDATE the aggregated average rating of their parent Track or Playlist when created.
 
@@ -87,6 +56,30 @@ class TRating(Model):
         rCount = self.target.tratings.count()
         self.target.aggRating = agg + (self.rating - agg)/rCount
         self.target.save()
+
+
+# Models the advanced user profile settings and features, holds a list of all previous ratings through the rating relational classes
+class UserProfile(Model):
+    user=OneToOneField(User,on_delete=CASCADE,related_name='profile')
+
+    THEMES=[('light','LIGHT'),('dark','DARK')]
+    themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
+    friendList=ManyToManyField(User,related_name='friends',blank=True)
+    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True)
+    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True)
+    playlistRatings=ManyToManyField(Playlist,through=PRating,related_name='pratings',blank=True)
+    trackRatings=ManyToManyField(Track,through=TRating,related_name='tratings',blank=True)
+
+
+# Meta class representing the relationship between tracks and playlists. (T)rack-(P)laylist-(R)elationship Meta class
+# Each TPR_Meta represents the relationship between a track and a playlist, and features the time it was added to the list.
+class TPR_Meta(Model):
+    track=ForeignKey(Track,on_delete=CASCADE,related_name='relatedPlaylists')
+    playlist=ForeignKey(Playlist,on_delete=CASCADE,related_name='relatedTracks')
+    added_on=DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together=[['track','playlist']]
 
 
 # Model of the comment and it's fields. Note this is not final and can be subject to change
