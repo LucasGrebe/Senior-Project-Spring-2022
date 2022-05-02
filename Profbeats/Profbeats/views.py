@@ -8,9 +8,6 @@ from django.contrib import messages as djangomessages
 
 from django.contrib.auth import logout
 
-
-
-
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
@@ -208,15 +205,42 @@ def profile(request):
     if request.method == 'POST':
         form = FriendRequestForm(request.POST)
         if form.is_valid():
-            if User.objects.get(username=form.recipient).exists() and request.user.get_username() is not form.recipient:
-                sender = request.user
-                recipient = User.objects.get(username = form.recipient)
-                fr = FriendRequest(sender, recipient)
-                fr.save()
-                djangomessages.success(request, ("Your friend request was sent."))
-        
+            formrecipient = form.cleaned_data['recipient']
+            if User.objects.filter(email=formrecipient).exists():
+                if request.user.get_username() != formrecipient:
+                    recipient = User.objects.get(email = formrecipient)
+                    fr = FriendRequest(sender=request.user, recipient=recipient)
+                    fr.save()
+                    djangomessages.success(request, ("Your friend request was sent."))
+                else:
+                    djangomessages.warning(request, ("You can't send a friend request to yourself."))
+            else:
+                djangomessages.warning(request, ("Couldn't find that user to send a friend request to."))
+
         else:
             print(form.errors.as_data())
 
     context['form'] = form
     return render(request, 'profile.html', context)
+
+def deleteFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    request.user.profile.friendList.remove(friend)
+    friend.profile.friendList.remove(request.user)
+    djangomessages.success(request, ('Friend deleted.'))
+    return redirect('profile')
+
+def acceptFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    sender = fr.sender
+    sender.profile.friendList.add(request.user)
+    request.user.profile.friendList.add(sender)
+    fr.delete()
+    djangomessages.success(request, ('Friend request accepted.'))
+    return redirect('profile')
+
+def denyFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    fr.delete()
+    djangomessages.success(request, ('Friend request denied.'))
+    return redirect('profile')

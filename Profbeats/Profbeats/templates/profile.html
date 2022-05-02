@@ -3,5 +3,57 @@
 {% block title %} ProfBeats | Profile {% endblock %}
 
 {% block content %}
+<br>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable" role="alert">
+            <button class="close" data-dismiss="alert">
+                X
+            </button>
+            <center>{{ message }}</center>
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            <center>{{ message }}</center>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
+<h1>Profile of {{ request.user }}</h1>
+{% if request.user.profile.friendList.exists %}
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Friend Emails</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+    {% for friend in request.user.profile.friendList.all %}
+      <tr>
+        <td>{{ friend }}</td>
+        <td><div class="col"><a class="btn btn-danger" href="{% url 'delete_friend' friend.id %}">Delete</a></div></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+<p>Your friend list is empty!</p>
+{% endif %}
+
+<div class="container">
+<form method='post' action="/profile/">
+    {% csrf_token %}
+    <h2>Add a Friend by Email</h2>
+    <br>
+    <div>
+        Recipient: {{ form.recipient }}
+    </div>
+    <br>
+    <button class="btn btn-primary btn-lg" type="submit">Send Friend Request</button>
+</form>
+</div>
+<br>
 {% endblock %}
