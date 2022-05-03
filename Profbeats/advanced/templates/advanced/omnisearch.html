@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %} Search Results {% endblock %}
+
+{% block content %}
+
+    {% csrf_token %}
+    <br>
+    <center>
+        <h2>Here are the results</h2>
+    </center>
+
+
+{% if zeroResults %}
+
+<br>
+    <div>
+        No results
+    </div>
+    <br>
+
+
+{% else %}
+
+<br>
+    <div>
+        Here ya go
+    </div>
+<br>
+
+{% endif %}
+
+
+
+
+{% if ownerPlaylists  %}
+
+
+
+<br>
+    <left>
+        <h1>Owners</h1>
+    </left>
+
+    {% for owner, playlists in ownerPlaylists.items %}
+       <h2>{{ owner.email }}</h2>
+        {% for playlist, content in playlists.items %}
+
+        <body>
+            <div>
+                <img src="{{ playlist.img }}" class="img-fluid">
+                <br>
+                Title: {{ playlist.title }}
+                <br>
+                
+                <form method='post' action="{% url 'content_display' playlist.id %}">
+                    {% csrf_token %}
+                    <center>
+                        <h3>Rate this playlist!</h3>
+                    </center>
+                    <br>
+                    Playlist Rating: {{playlist.aggRating}}
+                    <br>
+                    <input type="hidden" name="target" value="{{ playlist.id }}">
+                    {{f_prate.rating}}
+                    <br>
+                    Rater: <br>
+                    {{f_prate.prated_by}}
+                    <br>
+                    <button class="btn btn-primary btn-lg" type="submit" name="rate_playlist">Rate</button>
+                </form>
+            </div>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        {% firstof playlist as playkey %}
+                        {% for song in content %}
+                        
+                       
+                        <td>
+                            <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
+                            frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            <br>
+                            Song Rating: {{ song.aggRating }}
+                            <form method="post" action="{% url 'content_display' playlist.id %}">
+                                {% csrf_token %}
+                                <br>
+                                <input type="hidden" name="target" value="{{ song.id }}">
+                                {{f_trate.rating}}
+                                <br>
+                                Rater: <br>
+                                {{f_trate.trated_by}}
+                                <br>
+                                <button class="btn btn-primary btn-lg" type="submit" name="rate_track">Rate</button>
+                            </form>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            {% for comment in comments %}
+            <div class="comment" style="padding: 10px;">
+                <p class="font-weight-bold">
+                    {{comment.created_by}}
+                    <span class="text-muted font-weight-normal">
+                        {{comment.created_on}}
+                    </span>
+                </p>
+                {{comment.body|linebreaks}}
+            </div>
+            {% endfor %}
+            
+                <br>
+        </body>
+            
+    
+        
+        
+        {% endfor %}
+
+
+    {% endfor %}
+
+
+{% endif %}
+
+
+{% if playlists  %}
+
+<br>
+    <left>
+        <h2>Playlists</h2>
+    </left>
+
+    {% for playlist, content in playlists.items %}
+
+    <body>
+        <div>
+            <img src="{{playlist.img}}" class="img-fluid">
+            <br>
+            Title: {{ playlist.title }}
+            <form method='post' action="{% url 'content_display' playlist.id %}">
+                {% csrf_token %}
+                <center>
+                    <h4>Rate this playlist!</h4>
+                </center>
+                <br>
+                Playlist Rating: {{playlist.aggRating}}
+                <br>
+                Id: {{ playlist.id }}
+                <input type="hidden" name="target" value="{{ playlist.id }}">
+                {{f_prate.rating}}
+                <br>
+                Rater: <br>
+                {{f_prate.prated_by}}
+                <br>
+                <button class="btn btn-primary btn-lg" type="submit" name="rate_playlist">Rate</button>
+            </form>
+        </div>
+        <table class="table">
+            <tbody>
+                <tr>
+                    {% for song in content %}
+                    <td>
+                        <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
+                        frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        <br>
+                        Song Rating: {{ song.aggRating }}
+                        <form method="post" action="{% url 'content_display' playlist.id %}">
+                            {% csrf_token %}
+                            <br>
+                            <input type="hidden" name="target" value="{{ song.id }}">
+                            {{f_trate.rating}}
+                            <br>
+                            Rater: <br>
+                            {{f_trate.trated_by}}
+                            <br>
+                            <button class="btn btn-primary btn-lg" type="submit" name="rate_track">Rate</button>
+                        </form>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        {% for comment in comments %}
+        <div class="comment" style="padding: 10px;">
+            <p class="font-weight-bold">
+                {{comment.created_by}}
+                <span class="text-muted font-weight-normal">
+                    {{comment.created_on}}
+                </span>
+            </p>
+            {{comment.body|linebreaks}}
+        </div>
+        {% endfor %}
+        <form method='post' action="{% url 'content_display' playlist.id %}">
+            {% csrf_token %}
+            
+            <br>
+    </body>
+        
+
+    
+    
+    {% endfor %}
+
+
+{% endif %}
+
+
+{% endblock %}
