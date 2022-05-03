@@ -1,5 +1,3 @@
-from re import A
-from winreg import QueryValue
 from Profbeats.forms import PlaylistForm
 from advanced.forms import AdvancedForm
 from django.shortcuts import render
