@@ -70,17 +70,43 @@ def createPlaylist(request):
 
 def addToPlaylist(request):
     if request.method == 'POST':
-        f_TPR = AddToPlaylistForm(request.POST)
+        f_TPR = EditPlaylistForm(request.POST)
         new_TPR = None
         if f_TPR.is_valid():
-            new_TPR=f_TPR.save(commit=False)
+            playlist=f_TPR.playlist
+            new_TPR=Playlist.objects.get(pk=playlist.playlistId).add(f_TPR.track)
             new_TPR.save()
         else:
-            raise Http404('Cannot add the same song to a playlist twice')
+            raise Http404('Invalid Form Error')
     return HttpResponseRedirect(request.path_info)
 
-def updatePlaylist(request):
-    pass
+def updatePlaylist(request,playlistId):
+    playlist = Playlist.objects.get(pk=playlistId)
+    context = {
+        'comments': playlist.comments.all(),
+        'content': playlist.tracks.all(),
+        'playlist': playlist
+    }
+    if request.method == 'GET':
+        form = EditPlaylistForm(playlist)
+        context['form'] = form
+        return render(request,'createPlaylist.html',context)
+    if request.method == 'POST':
+        form = EditPlaylistForm(request.POST)
+        uPlaylist = None
+        if form.is_valid():
+            if 'rename' in request.POST:
+                uPlaylist = Playlist.objects.get(pk=playlistId).update(title=form.title)
+            if 'resplash' in request.POST:
+                uPlaylist = Playlist.objects.get(pk=playlistId).update(img=form.img)
+            if 'dropTrack' in request.POST:
+                uPlaylist = Playlist.objects.get(pk=playlistId).remove(form.track)
+            uPlaylist.save()
+        else:
+            raise Http404('Invalid Form Error')
+        context['form'] = form
+        return render(request,'createPlaylist.html',context)
+            
 
 ### Universal Handler Function for the playlistContent.html webpage ###
 def updatePlaylistContent(request,playlistId):
