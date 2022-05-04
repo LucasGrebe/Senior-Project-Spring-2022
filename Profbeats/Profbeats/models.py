@@ -3,11 +3,13 @@ from django.db import models
 from django.db.models import *
 from users.models import CustomUser as User
 
+
 # Model of the track and it's fields. Note this is not final and can be subject to change
 # The track list locally stores all songs that belong to user-generated playlists (necessary if we cannot link accounts directly to spotify)
 class Track(models.Model):
     id=CharField(max_length=50,primary_key=True)
     aggRating=FloatField()
+
 
 # Model of a playlist and it's fields. Note this is not final and can be subject to change
 # A playlist without a spotify-link is a NATIVE playlist. Many TRACKS can be used by many PLAYLISTS. Many RATINGS can belong to SINGLE playlists
@@ -26,8 +28,8 @@ class Playlist(models.Model):
 class PRating(Model):
     RATINGS=[(1,'ONE'),(2,'TWO'),(3,'THREE'),(4,'FOUR'),(5,'FIVE')]
     rating=PositiveSmallIntegerField(choices=RATINGS)
-    prated_by=ForeignKey(User,on_delete=PROTECT,related_name='prateR',blank=True)
-    target=ForeignKey(Playlist,on_delete=CASCADE,related_name='prateR',blank=True)
+    prated_by=ForeignKey(User,on_delete=PROTECT,related_name='prater',blank=True)
+    target=ForeignKey(Playlist,on_delete=CASCADE,related_name='pratings',blank=True)
 
     class Meta:
         unique_together=[['prated_by','target']]
@@ -42,8 +44,8 @@ class PRating(Model):
 class TRating(Model):
     RATINGS=[(1,'ONE'),(2,'TWO'),(3,'THREE'),(4,'FOUR'),(5,'FIVE')]
     rating=PositiveSmallIntegerField(choices=RATINGS)
-    trated_by=ForeignKey(User,on_delete=PROTECT,related_name='trateR',blank=True)
-    target=ForeignKey(Track,on_delete=CASCADE,related_name='trateR',blank=True)
+    trated_by=ForeignKey(User,on_delete=PROTECT,related_name='trater',blank=True)
+    target=ForeignKey(Track,on_delete=CASCADE,related_name='tratings',blank=True)
 
     class Meta:
         unique_together=[['trated_by','target']]
@@ -63,8 +65,9 @@ class UserProfile(Model):
     THEMES=[('light','LIGHT'),('dark','DARK')]
     themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
     friendList=ManyToManyField(User,related_name='friends',blank=True)
-    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True,null=True)
-    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True,null=True)
+    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True)
+    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True)
+
 
 # Meta class representing the relationship between tracks and playlists. (T)rack-(P)laylist-(R)elationship Meta class
 # Each TPR_Meta represents the relationship between a track and a playlist, and features the time it was added to the list.
@@ -91,10 +94,6 @@ class Comment(Model):
 
     def __str__(self):
         return 'Comment {} by {}'.format(self.body,self.created_by.username)
-
-class FriendRequest(models.Model):
-    sender=ForeignKey(User,related_name='sender',on_delete=CASCADE)
-    recipient=ForeignKey(User,related_name='recipient',on_delete=CASCADE)
 
 # class Musicdata(models.Model):
 #     acousticness = models.FloatField()
