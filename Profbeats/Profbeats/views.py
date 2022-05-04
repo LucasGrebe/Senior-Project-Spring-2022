@@ -176,6 +176,7 @@ def recent(request, track):
         sp2.playlist_add_items(playlist_id=recents, items=[track])
 
     return redirect("lander_get")
+
 def profile(request):
     # You need to be logged in to view your profile.
     # Redirect to the login page if the user is not logged in.
