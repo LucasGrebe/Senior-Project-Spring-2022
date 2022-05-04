@@ -26,8 +26,8 @@ class Playlist(models.Model):
 class PRating(Model):
     RATINGS=[(1,'ONE'),(2,'TWO'),(3,'THREE'),(4,'FOUR'),(5,'FIVE')]
     rating=PositiveSmallIntegerField(choices=RATINGS)
-    prated_by=ForeignKey(User,on_delete=PROTECT,related_name='prater',blank=True)
-    target=ForeignKey(Playlist,on_delete=CASCADE,related_name='pratings',blank=True)
+    prated_by=ForeignKey(User,on_delete=PROTECT,related_name='prateR',blank=True)
+    target=ForeignKey(Playlist,on_delete=CASCADE,related_name='prateR',blank=True)
 
     class Meta:
         unique_together=[['prated_by','target']]
@@ -42,8 +42,8 @@ class PRating(Model):
 class TRating(Model):
     RATINGS=[(1,'ONE'),(2,'TWO'),(3,'THREE'),(4,'FOUR'),(5,'FIVE')]
     rating=PositiveSmallIntegerField(choices=RATINGS)
-    trated_by=ForeignKey(User,on_delete=PROTECT,related_name='trater',blank=True)
-    target=ForeignKey(Track,on_delete=CASCADE,related_name='tratings',blank=True)
+    trated_by=ForeignKey(User,on_delete=PROTECT,related_name='trateR',blank=True)
+    target=ForeignKey(Track,on_delete=CASCADE,related_name='trateR',blank=True)
 
     class Meta:
         unique_together=[['trated_by','target']]
