@@ -361,7 +361,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'advsearch' %}">Advanced Search</a>
+                            <a class="nav-link" href="{% url 'advsearch' %}">Playlist Search</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.html">Profile</a>
@@ -383,17 +383,24 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                     </li>
                      {% endif %}
                         
-                        <!--
+                        <!-- </ul>
+                    <form class="d-flex" method="GET" action="{% url 'omniresults' %}">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Search Anything" aria-label="Search">
+                    <button class="btn btn-outline-success"  type="submit">Search</button>
                         <li class="nav-item">
                             <a class="nav-link disabled">Disabled</a>
                         </li>
                         -->
-                    </ul>
-                    <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                   
+
+                    
+
                     </form>
                 </div>
+                <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'omniresults' %}" >
+                    <input class="form-control mr-sm-2" type="search" name="search">
+                    <button class="btn btn btn-outline-info my-2 my-sm-0" type="submit"> Search </button>
+                </form>
             </div>
         </nav>
     </div>
