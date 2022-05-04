@@ -45,9 +45,9 @@ def find_artists(artist, song1, song2, song3, song4):
 
 def find_tracks(songs):
 	if not songs:
-		r_tracks = sp.recommendations(limit=100, min_popularity=79, seed_genres=["acoustic","afrobeat","alt-rock","alternative","ambient"])
+		r_tracks = sp.recommendations(limit=12, min_popularity=79, seed_genres=["acoustic","afrobeat","alt-rock","alternative","ambient"])
 	else:
-		r_tracks = sp.recommendations(limit=100, seed_tracks=songs)
+		r_tracks = sp.recommendations(limit=12, seed_tracks=songs)
 	temp = r_tracks.get('tracks')
 	tracks = []
 	for i in range(len(temp)):
@@ -107,15 +107,18 @@ def createPlaylist(request):
 
 def addToPlaylist(request):
 	if request.method == 'POST':
-		f_TPR = EditPlaylistForm(request.POST)
-		new_TPR = None
-		if f_TPR.is_valid():
-			playlist=f_TPR.playlist
-			new_TPR=Playlist.objects.get(pk=playlist.playlistId).add(f_TPR.track)
-			new_TPR.save()
+		addForm = EditPlaylistForm(request.POST)
+		if addForm.is_valid():
+			track = addForm.cleaned_data['track']
+			playlistId = addForm.cleaned_data['playlistId']
+			newTrack,created=Track.objects.get_or_create(id=track,aggRating=0.0)
+			print("Data is: ", newTrack,created,playlistId)
+			if created:
+				newTrack.save()
+			Playlist.objects.get(pk=playlistId).tracks.add(newTrack)
 		else:
-			raise Http404('Invalid Form Error')
-	return HttpResponseRedirect(request.path_info)
+			raise Http404('Invalid Form Error',addForm.data)
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def updatePlaylist(request,playlistId):
 	playlist = Playlist.objects.get(pk=playlistId)
@@ -204,32 +207,31 @@ def recommend_get(request):
 
 def lander_get(request):
 	tracksall = []
+	addForm=EditPlaylistForm(None)
 	# print(request.user.profile.recents.spotify_link[34:])
 	if not request.user.is_authenticated:
 		tracks = find_tracks([])
 		for i in range(0, 1000, 4):
 			tracksall.append(tracks[i:i+4])
 		return render(request, 'lander.html', {'tracksall': tracksall, 'not_logged_in': True})
-	elif not request.user.profile.recents:
+	elif len(request.user.profile.recents.tracks.all()) == 0:
 		tracks = find_tracks([])
 		for i in range(0, 1000, 4):
 			tracksall.append(tracks[i:i+4])
-		return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': []})
-	recently_listened_to = sp.playlist(request.user.profile.recents.spotify_link[34:])
-	recently_listened_to_tracks = []
-	for item in recently_listened_to['tracks']['items']:
-		recently_listened_to_tracks.append(item['track']['id'])
+		return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': [], 'addForm':addForm})
+	recently_listened_to_tracks = list(request.user.profile.recents.tracks.all().values_list('id',flat=True))
 	temp = recently_listened_to_tracks
 	if len(recently_listened_to_tracks) < 5:
-		recently_listened_to_tracks = recently_listened_to_tracks[0:len(recently_listened_to_tracks)]
+		recently_listened_to_tracks = recently_listened_to_tracks[::-1]
 	else:
-		recently_listened_to_tracks = recently_listened_to_tracks[0:5]
+		recently_listened_to_tracks = recently_listened_to_tracks[(len(recently_listened_to_tracks)-4)::]
+	recently_listened_to_tracks.reverse()
 	tracks = find_tracks(recently_listened_to_tracks)
 	for i in range(0, 1000, 4):
 		tracksall.append(tracks[i:i+4])
 	if not temp:
-		return render(request, 'lander.html', {'tracksall': tracksall})
-	return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to_tracks})
+		return render(request, 'lander.html', {'tracksall': tracksall, 'addForm':addForm})
+	return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to_tracks, 'addForm':addForm})
 
 token = util.prompt_for_user_token(username='9indqdxoj2o45azyfw4ebz5ux',scope='playlist-modify-private',client_id='44dbdabeed3d42eba9abf16a4159c53e',client_secret='139765ae1bb445b2abfb6799e1698072', redirect_uri='http://127.0.0.1:8000/')
 def recent(request, track):
@@ -239,12 +241,14 @@ def recent(request, track):
 		sp2 = spotipy.Spotify(auth=token)
 		if not request.user.profile.recents:
 			request.user.profile.recents = Playlist()
-		recents = request.user.profile.recents.spotify_link[34:]
+		recents = request.user.profile.recents.playlistId
 		playlist = sp2.playlist(recents)
 		for item in playlist['tracks']['items']:
 			if len(playlist['tracks']['items']) > 4:
 				sp2.playlist_remove_specific_occurrences_of_items(playlist_id=recents, items=[{'uri': item['track']['id'], 'positions': [0]},])
 			break
+		addPlaylist = Playlist.objects.get(pk=playlist.playlistId).add(f_TPR.track)
+		addPlaylist.save()
 		sp2.playlist_add_items(playlist_id=recents, items=[track])
 
 	return redirect("lander_get")

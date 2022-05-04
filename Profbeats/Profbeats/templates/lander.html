@@ -130,7 +130,13 @@
             <td>
             <iframe src="https://open.spotify.com/embed/track/{{ track }}" width="300" height="380" 
             frameborder="10" allowtransparency="true" allow="encrypted-media"></iframe>
-            <div class="col m-2 text-left"><a class="btn btn-secondary" href="{% url 'recent' track %}">Add to Recents</a></div>
+            <form method="POST" action="{% url 'recent' %}">
+                {% csrf_token %}
+                <input type="hidden" name="track" value="{{ track }}">
+                <input type="hidden" name="playlistId" value="{{ user.profile.recents.id }}">
+                <input type="hidden" name="test" value="{{ user }}">
+                <button class="btn btn-dark btn-lg" type="submit" name="addRecent">Add to Recents</button>
+            </form>
             </td>
             {% endfor %}
             </tr>
@@ -163,7 +169,13 @@
         <td>
         <iframe src="https://open.spotify.com/embed/track/{{ track }}" width="300" height="380" 
         frameborder="10" allowtransparency="true" allow="encrypted-media"></iframe>
-        <div class="col m-2 text-left"><a class="btn btn-secondary" href="{% url 'recent' track %}">Add to Recents</a></div>
+        <form method="POST" action="{% url 'recent' %}">
+            {% csrf_token %}
+                <input type="hidden" name="track" value="{{ track }}">
+                <input type="hidden" name="playlistId" value="{{ user.profile.recents.id }}">
+                <input type="hidden" name="test" value="{{ user }}">
+                <button class="btn btn-dark btn-lg" type="submit" name="addRecent">Add to Recents</button>
+        </form>
         </td>
         {% endfor %}
         </tr>

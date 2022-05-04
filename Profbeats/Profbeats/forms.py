@@ -38,8 +38,15 @@ class PlaylistForm(forms.ModelForm):
         fields=('title','spotify_link','img','owner')
 
 class EditPlaylistForm(forms.Form):
+    track=forms.CharField(required=False)
+    title=forms.CharField(required=False)
+    playlistId=forms.IntegerField()
+    img=forms.ImageField(required=False)
+
+class TrackPlaylistRelationForm(forms.ModelForm):
     class Meta:
-        fields=('track','title','playlist','img')
+        model=TPR_Meta
+        fields=('playlist','track')
 
 class PlaylistRatingForm(forms.ModelForm):
     class Meta:
