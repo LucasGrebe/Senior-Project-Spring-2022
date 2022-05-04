@@ -378,9 +378,6 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="#">Playlists</a>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'messager:messages' %}">Messager</a>
@@ -388,12 +385,20 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                         
                         {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'messager:messages' %}">Messaging</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                        {%else%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
                         {% endif %}
+
                         
                         <!-- </ul>
                     <form class="d-flex" method="GET" action="{% url 'omniresults' %}">

@@ -30,6 +30,7 @@ urlpatterns = [
     path('', views.lander_get, name='lander_get'),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(template_name='lander.html'), name='logout'),
+    path('register/',views.register_request,name='register'),
     path('playlistContent/<playlistId>',views.updatePlaylistContent,name='content_display'),
     path('playlist/createPlaylist/',views.createPlaylist,name='create_playlist'),
     path('recent/<track>/',views.recent,name='recent'),
