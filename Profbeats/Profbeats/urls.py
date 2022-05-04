@@ -33,6 +33,11 @@ urlpatterns = [
     path('playlistContent/<playlistId>',views.updatePlaylistContent,name='content_display'),
     path('playlist/createPlaylist/',views.createPlaylist,name='create_playlist'),
     path('recent/<track>/',views.recent,name='recent'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/messagefriend/<friendId>', views.messageFriend,name='message_friend'),
+    path('profile/deletefriend/<friendId>', views.deleteFriend,name='delete_friend'),
+    path('profile/accept/<FRId>', views.acceptFriendRequest,name='accept_friend_request'),
+    path('profile/deny/<FRId>', views.denyFriendRequest,name='deny_friend_request'),
 
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/
