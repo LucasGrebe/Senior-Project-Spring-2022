@@ -35,6 +35,7 @@ urlpatterns = [
     path('playlist/createPlaylist/',views.createPlaylist,name='create_playlist'),
     path('recent/',views.addToPlaylist,name='recent'),
     path('profile/', views.profile, name='profile'),
+    # path('profile/playlists/<playlistId>',views.blah,name='dfigdf'),
     path('profile/messagefriend/<friendId>', views.messageFriend,name='message_friend'),
     path('profile/deletefriend/<friendId>', views.deleteFriend,name='delete_friend'),
     path('profile/accept/<FRId>', views.acceptFriendRequest,name='accept_friend_request'),
