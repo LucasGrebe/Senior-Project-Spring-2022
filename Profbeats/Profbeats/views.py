@@ -92,7 +92,7 @@ def loginForm(request):
 
 def logout_view(request):
 	logout(request)
-	# Redirect to a success page.
+	return redirect('lander_get')
 
 def createPlaylist(request):
 	f_playlist = PlaylistForm(request)

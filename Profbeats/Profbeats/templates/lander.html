@@ -7,8 +7,8 @@
 
 <div id="mainpage">
     <div id="welcomeRow">
-        {% if not_logged_in %}
-        <h1>Welcome to Profbeats, log in to listen to personally reccommended songs</h1>
+        {% if not user.is_authenticated %}
+        <h1>Welcome to Profbeats, log in to listen to personally recommended songs</h1>
         {% else %}
         <h1>Welcome to Profbeats, {{ user }}</h1>
         {% endif %}
@@ -103,7 +103,7 @@
 
     <div id="recommendRow">
         {% if not recently_listened_to %}
-            {% if not_logged_in %}
+            {% if not user.is_authenticated %}
             <h1>Check out what's popular</h1>
             <table class="table">
                 <tbody>
