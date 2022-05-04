@@ -45,16 +45,16 @@ def find_artists(artist, song1, song2, song3, song4):
 
 def find_tracks(songs):
 	if not songs:
-        r_tracks = sp.recommendations(limit=100, min_popularity=79, seed_genres=["acoustic","afrobeat","alt-rock","alternative","ambient"])
-    else:
-        r_tracks = sp.recommendations(limit=100, seed_tracks=songs)
-    temp = r_tracks.get('tracks')
-    tracks = []
-    for i in range(len(temp)):
-        temp2 = temp[i]
-        track = temp2.get('id')
-        tracks.append(track)
-    return tracks
+		r_tracks = sp.recommendations(limit=100, min_popularity=79, seed_genres=["acoustic","afrobeat","alt-rock","alternative","ambient"])
+	else:
+		r_tracks = sp.recommendations(limit=100, seed_tracks=songs)
+	temp = r_tracks.get('tracks')
+	tracks = []
+	for i in range(len(temp)):
+		temp2 = temp[i]
+		track = temp2.get('id')
+		tracks.append(track)
+	return tracks
 
 def register_request(request):
 	if request.method == "POST":
@@ -203,51 +203,51 @@ def recommend_get(request):
 
 
 def lander_get(request):
-    tracksall = []
-    # print(request.user.profile.recents.spotify_link[34:])
-    if not request.user.is_authenticated:
-        tracks = find_tracks([])
-        for i in range(0, 1000, 4):
-            tracksall.append(tracks[i:i+4])
-        return render(request, 'lander.html', {'tracksall': tracksall, 'not_logged_in': True})
-    elif not request.user.profile.recents:
-        tracks = find_tracks([])
-        for i in range(0, 1000, 4):
-            tracksall.append(tracks[i:i+4])
-        return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': []})
-    recently_listened_to = sp.playlist(request.user.profile.recents.spotify_link[34:])
-    recently_listened_to_tracks = []
-    for item in recently_listened_to['tracks']['items']:
-        recently_listened_to_tracks.append(item['track']['id'])
-    temp = recently_listened_to_tracks
-    if len(recently_listened_to_tracks) < 5:
-        recently_listened_to_tracks = recently_listened_to_tracks[0:len(recently_listened_to_tracks)]
-    else:
-        recently_listened_to_tracks = recently_listened_to_tracks[0:5]
-    tracks = find_tracks(recently_listened_to_tracks)
-    for i in range(0, 1000, 4):
-        tracksall.append(tracks[i:i+4])
-    if not temp:
-        return render(request, 'lander.html', {'tracksall': tracksall})
-    return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to_tracks})
+	tracksall = []
+	# print(request.user.profile.recents.spotify_link[34:])
+	if not request.user.is_authenticated:
+		tracks = find_tracks([])
+		for i in range(0, 1000, 4):
+			tracksall.append(tracks[i:i+4])
+		return render(request, 'lander.html', {'tracksall': tracksall, 'not_logged_in': True})
+	elif not request.user.profile.recents:
+		tracks = find_tracks([])
+		for i in range(0, 1000, 4):
+			tracksall.append(tracks[i:i+4])
+		return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': []})
+	recently_listened_to = sp.playlist(request.user.profile.recents.spotify_link[34:])
+	recently_listened_to_tracks = []
+	for item in recently_listened_to['tracks']['items']:
+		recently_listened_to_tracks.append(item['track']['id'])
+	temp = recently_listened_to_tracks
+	if len(recently_listened_to_tracks) < 5:
+		recently_listened_to_tracks = recently_listened_to_tracks[0:len(recently_listened_to_tracks)]
+	else:
+		recently_listened_to_tracks = recently_listened_to_tracks[0:5]
+	tracks = find_tracks(recently_listened_to_tracks)
+	for i in range(0, 1000, 4):
+		tracksall.append(tracks[i:i+4])
+	if not temp:
+		return render(request, 'lander.html', {'tracksall': tracksall})
+	return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to_tracks})
 
 token = util.prompt_for_user_token(username='9indqdxoj2o45azyfw4ebz5ux',scope='playlist-modify-private',client_id='44dbdabeed3d42eba9abf16a4159c53e',client_secret='139765ae1bb445b2abfb6799e1698072', redirect_uri='http://127.0.0.1:8000/')
 def recent(request, track):
-    print("HERE TRACK", track)
-    if token:
-        print("HERE TOKEN")
-        sp2 = spotipy.Spotify(auth=token)
-        if not request.user.profile.recents:
-            request.user.profile.recents = Playlist()
-        recents = request.user.profile.recents.spotify_link[34:]
-        playlist = sp2.playlist(recents)
-        for item in playlist['tracks']['items']:
-            if len(playlist['tracks']['items']) > 4:
-                sp2.playlist_remove_specific_occurrences_of_items(playlist_id=recents, items=[{'uri': item['track']['id'], 'positions': [0]},])
-            break
-        sp2.playlist_add_items(playlist_id=recents, items=[track])
+	print("HERE TRACK", track)
+	if token:
+		print("HERE TOKEN")
+		sp2 = spotipy.Spotify(auth=token)
+		if not request.user.profile.recents:
+			request.user.profile.recents = Playlist()
+		recents = request.user.profile.recents.spotify_link[34:]
+		playlist = sp2.playlist(recents)
+		for item in playlist['tracks']['items']:
+			if len(playlist['tracks']['items']) > 4:
+				sp2.playlist_remove_specific_occurrences_of_items(playlist_id=recents, items=[{'uri': item['track']['id'], 'positions': [0]},])
+			break
+		sp2.playlist_add_items(playlist_id=recents, items=[track])
 
-    return redirect("lander_get")
+	return redirect("lander_get")
 
 def profile(request):
 	# You need to be logged in to view your profile.
@@ -308,7 +308,7 @@ def acceptFriendRequest(request, FRId):
 	return redirect('profile')
 
 def denyFriendRequest(request, FRId):
-    fr = FriendRequest.objects.get(pk=FRId)
-    fr.delete()
-    djangomessages.success(request, ('Friend request denied.'))
-    return redirect('profile')
+	fr = FriendRequest.objects.get(pk=FRId)
+	fr.delete()
+	djangomessages.success(request, ('Friend request denied.'))
+	return redirect('profile')
