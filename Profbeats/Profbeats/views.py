@@ -1,3 +1,5 @@
+from faulthandler import dump_traceback
+from importlib.machinery import WindowsRegistryFinder
 from re import A
 from .forms import *
 from django.shortcuts import redirect, render,get_object_or_404
@@ -292,9 +294,6 @@ def profile(request):
 	context['form'] = form
 	context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
 	return render(request, 'profile.html', context)
-
-def getUserPlaylists(request):
-
 
 def messageFriend(request, friendId):
 	friend = User.objects.get(pk=friendId)
