@@ -95,6 +95,10 @@ class Comment(Model):
     def __str__(self):
         return 'Comment {} by {}'.format(self.body,self.created_by.username)
 
+class FriendRequest(models.Model):
+    sender=ForeignKey(User,related_name='sender',on_delete=CASCADE)
+    recipient=ForeignKey(User,related_name='recipient',on_delete=CASCADE)
+
 # class Musicdata(models.Model):
 #     acousticness = models.FloatField()
 #     artists = models.TextField()
