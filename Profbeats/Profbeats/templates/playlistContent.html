@@ -66,23 +66,25 @@ Context vars: content, comments, playlist>
     {% endfor %}
     <form method='post' action="{% url 'content_display' playlist.id %}">
         {% csrf_token %}
-        <br>
+        <br/>
         <center>
             <h2>Join the conversation!</h2>
         </center>
-        <br>
+        <br/>
         <div>
             User: <br>
             {{ f_comment.created_by }}
         </div>
-        <br>
+        <br/>
+
         <div>
             Comment: <br>
             {{ f_comment.body }}
         </div>
-        <br>
+        <br/>
         <button class="btn btn-primary btn-lg" type="submit" name="post_comment">Submit</button>
-        </form>
-        <br>
+    </form>
+    
+    <br/>
 </body>
 {%endblock%}
