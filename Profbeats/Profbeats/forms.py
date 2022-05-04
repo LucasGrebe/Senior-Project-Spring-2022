@@ -2,7 +2,7 @@
 from django import forms
 from users.models import CustomUser as User
 import users.forms as uforms
-from .models import Comment, PRating,Playlist, TRating, Track
+from .models import Comment, PRating,Playlist, TPR_Meta, TRating, Track
 # NOTE: SOME MODELS MAY NEED TO BE IMPORTED DIRECTLY
 
 class LoginForm(forms.Form):
@@ -22,6 +22,11 @@ class PlaylistForm(forms.ModelForm):
     class Meta:
         model=Playlist
         fields=('title','spotify_link','img','aggRating','owner','tracks')
+
+class AddToPlaylistForm(forms.ModelForm):
+    class Meta:
+        model=TPR_Meta
+        fields=('track','playlist')
 
 class PlaylistRatingForm(forms.ModelForm):
     class Meta:
@@ -46,3 +51,5 @@ class ArtistForm(forms.Form):
     song3 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
     song4 = forms.CharField(required=False, widget=forms.TextInput(attrs={'size': '50'}))
 
+class FriendRequestForm(forms.Form):
+    recipient = forms.CharField(widget=forms.TextInput)
