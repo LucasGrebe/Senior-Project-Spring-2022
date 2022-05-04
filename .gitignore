@@ -1,7 +1,7 @@
 *.log
 *.pot
 *.pyc
-.cache
+.cache*
 **/.cache
 __pycache__
 __pycache__/

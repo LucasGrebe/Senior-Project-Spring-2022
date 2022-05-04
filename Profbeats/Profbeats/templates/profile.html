@@ -25,6 +25,7 @@
     <form method='post' action="/profile/">
         {% csrf_token %}
         <h2>Find a Friend by Email</h2>
+<<<<<<< HEAD
         <br/>
         <div>
             Recipient: {{ form.recipient }}
@@ -34,6 +35,17 @@
     </form>
 </div>
 <br/>
+=======
+        <br>
+        <div>
+            Recipient: {{ form.recipient }}
+        </div>
+        <br>
+        <button class="btn btn-primary btn-lg" type="submit">Send Friend Request</button>
+    </form>
+</div>
+<br>
+>>>>>>> 3915a40aa135df2733dd2cf066a538937adf769e
 
 {% if friend_request_list %}
 <center><h2>Pending Friend Requests</h2></center>

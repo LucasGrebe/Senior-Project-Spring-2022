@@ -1,15 +1,31 @@
 from re import A
 from .forms import *
-from django.shortcuts import render,get_object_or_404
-from django.http import Http404,JsonResponse
+from django.shortcuts import redirect, render,get_object_or_404
+from django.http import Http404, HttpResponseRedirect,JsonResponse
 from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
+<<<<<<< HEAD
+=======
+
+from django.shortcuts import render,redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render
+from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
+import random
+from spotipy import oauth2
+from django.contrib import messages as djangomessages
+>>>>>>> 3915a40aa135df2733dd2cf066a538937adf769e
 from django.contrib.auth import logout
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
 from spotipy import oauth2
+<<<<<<< HEAD
+=======
+import spotipy.util as util
+>>>>>>> 3915a40aa135df2733dd2cf066a538937adf769e
 
 cid = '44dbdabeed3d42eba9abf16a4159c53e'
 secret = '139765ae1bb445b2abfb6799e1698072'
@@ -17,7 +33,6 @@ client_credentials_manager = oauth2.SpotifyClientCredentials(client_id=cid, clie
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 spOAuth = oauth2.SpotifyOAuth(client_id=cid, client_secret=secret, redirect_uri='http://127.0.0.1:8000/')
-
 def find_artists(artist, song1, song2, song3, song4):
     to_pass = 'artist,album,track,playlist,show,episode'
     results = sp.search(q='artist:' + artist, type=to_pass)
@@ -32,7 +47,10 @@ def find_artists(artist, song1, song2, song3, song4):
     return tracks
 
 def find_tracks(songs):
-    r_tracks = sp.recommendations(limit=100, seed_tracks=songs)
+    if not songs:
+        r_tracks = sp.recommendations(limit=100, min_popularity=79, seed_genres=["acoustic","afrobeat","alt-rock","alternative","ambient"])
+    else:
+        r_tracks = sp.recommendations(limit=100, seed_tracks=songs)
     temp = r_tracks.get('tracks')
     tracks = []
     for i in range(len(temp)):
@@ -41,73 +59,7 @@ def find_tracks(songs):
         tracks.append(track)
     return tracks
 
-def Search(name, explicit, tempoMin = None, tempoMax = None, durMin = None, durMax = None ):
-    query = Musicdata.objects.filter(name__contains = name)
-    print(explicit)
-    if tempoMin is not None:
-        query = query.filter(tempo__gte = tempoMin)
-    if tempoMax is not None:
-        query = query.filter(tempo__lte = tempoMax)
-    if durMin is not None:
-        query = query.filter(duration_ms__gte = durMin * 60000)
-    if durMax is not None:
-        query = query.filter(duration_ms__lte = durMax * 60000)
-    if not explicit:
-        query = query.filter(explicit__lte = 0)
-    return list(query.order_by('-popularity').values('id','name','year', 'tempo', 'duration_ms'))
-
-
-def searchForm(request):
-      # create a form instance and populate it with data from the request:
-    form = SearchForm(request.POST)
-    ##sort_form = SortForm(request.POST)
-    # check whether it's valid:
-    if form.is_valid():
-        # process the data in form.cleaned_data as required
-        
-        sort = form.cleaned_data['sort']
-        tempo = form.cleaned_data['tempo']
-
-        if(tempo == 'slow'):
-            tempoMin = 20
-            tempoMax = 99
-        elif(tempo == 'medium'):
-            tempoMin = 100
-            tempoMax = 149
-        elif(tempo == 'fast'):
-            tempoMin = 150
-            tempoMax = 250
-        else:
-            tempoMin = 0
-            tempoMax = 500
-        explicit = form.cleaned_data['explicit']
-        
-        durMin = form.cleaned_data['durMin'] 
-        durMax = form.cleaned_data['durMax']
-        albums = Search(
-                form.cleaned_data['name'],
-                explicit,
-                tempoMin,
-                tempoMax,
-                durMin,
-                durMax,
-                
-                
-            )
-        
-        # Random 3 of top 10 popular albums
-        answer = albums
-        random.shuffle(answer)
-        answer = list(answer)[:7]
-        #x = 1/0
-        
-        if(sort != 'random' and sort != ''):
-            answer = sorted(answer, key = lambda i: i[sort])
-        return render(request, 'recommender/advanced.html', {'form': form, 'albums': answer })
-    else:
-        raise Http404('Something went wrong')
-
-def createAccountForm(request):
+def createAccount(request):
     pass
 
 def loginForm(request):
@@ -118,14 +70,54 @@ def logout_view(request):
     logout(request)
     # Redirect to a success page.
 
+def createPlaylist(request):
+    f_playlist = PlaylistForm(request)
+    new_playlist = f_playlist.save(commit=False)
+    new_playlist.title="Untitled"
+    new_playlist.aggRating=0.0
+    new_playlist.image=None
+    new_playlist.owner=request.user
+    new_playlist.tracks=None
+    new_playlist.save()
+    return HttpResponseRedirect(request.path_info)
 
-    
-def createPlaylistForm(request):
-    pass
+def addToPlaylist(request):
+    if request.method == 'POST':
+        f_TPR = AddToPlaylistForm(request.POST)
+        new_TPR = None
+        if f_TPR.is_valid():
+            new_TPR=f_TPR.save(commit=False)
+            new_TPR.save()
+        else:
+            raise Http404('Cannot add the same song to a playlist twice')
+    return HttpResponseRedirect(request.path_info)
 
-def comments(request,playlistId,userId):
-    pass
-
+def updatePlaylist(request,playlistId):
+    playlist = Playlist.objects.get(pk=playlistId)
+    context = {
+        'comments': playlist.comments.all(),
+        'content': playlist.tracks.all(),
+        'playlist': playlist
+    }
+    if request.method == 'GET':
+        form = EditPlaylistForm(playlist)
+        context['form'] = form
+        return render(request,'createPlaylist.html',context)
+    if request.method == 'POST':
+        form = EditPlaylistForm(request.POST)
+        uPlaylist = None
+        if form.is_valid():
+            if 'rename' in request.POST:
+                uPlaylist = Playlist.objects.get(pk=playlistId).update(title=form.title)
+            if 'resplash' in request.POST:
+                uPlaylist = Playlist.objects.get(pk=playlistId).update(img=form.img)
+            if 'dropTrack' in request.POST:
+                uPlaylist = Playlist.objects.get(pk=playlistId).remove(form.track)
+            uPlaylist.save()
+        else:
+            raise Http404('Invalid Form Error')
+        context['form'] = form
+        return render(request,'createPlaylist.html',context)
 
 ### Universal Handler Function for the playlistContent.html webpage ###
 def updatePlaylistContent(request,playlistId):
@@ -187,8 +179,111 @@ def recommend_get(request):
 
 def lander_get(request):
     tracksall = []
-    recently_listened_to = ['7CMVo848b9LsUtVavIoiXC', '5tUfJOqyiROxClednTF2FC', '7AYSl3u70hJ402o0u0gry5', '3jgHOTLHVfPI7twjEobWcC']
-    tracks = find_tracks(recently_listened_to)
+    # print(request.user.profile.recents.spotify_link[34:])
+    if not request.user.is_authenticated:
+        tracks = find_tracks([])
+        for i in range(0, 1000, 4):
+            tracksall.append(tracks[i:i+4])
+        return render(request, 'lander.html', {'tracksall': tracksall, 'not_logged_in': True})
+    elif not request.user.profile.recents:
+        tracks = find_tracks([])
+        for i in range(0, 1000, 4):
+            tracksall.append(tracks[i:i+4])
+        return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': []})
+    recently_listened_to = sp.playlist(request.user.profile.recents.spotify_link[34:])
+    recently_listened_to_tracks = []
+    for item in recently_listened_to['tracks']['items']:
+        recently_listened_to_tracks.append(item['track']['id'])
+    temp = recently_listened_to_tracks
+    if len(recently_listened_to_tracks) < 5:
+        recently_listened_to_tracks = recently_listened_to_tracks[0:len(recently_listened_to_tracks)]
+    else:
+        recently_listened_to_tracks = recently_listened_to_tracks[0:5]
+    tracks = find_tracks(recently_listened_to_tracks)
     for i in range(0, 1000, 4):
         tracksall.append(tracks[i:i+4])
-    return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to})
+    if not temp:
+        return render(request, 'lander.html', {'tracksall': tracksall})
+    return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to_tracks})
+
+token = util.prompt_for_user_token(username='9indqdxoj2o45azyfw4ebz5ux',scope='playlist-modify-private',client_id='44dbdabeed3d42eba9abf16a4159c53e',client_secret='139765ae1bb445b2abfb6799e1698072', redirect_uri='http://127.0.0.1:8000/')
+def recent(request, track):
+    print("HERE TRACK", track)
+    if token:
+        print("HERE TOKEN")
+        sp2 = spotipy.Spotify(auth=token)
+        if not request.user.profile.recents:
+            request.user.profile.recents = Playlist()
+        recents = request.user.profile.recents.spotify_link[34:]
+        playlist = sp2.playlist(recents)
+        for item in playlist['tracks']['items']:
+            if len(playlist['tracks']['items']) > 4:
+                sp2.playlist_remove_specific_occurrences_of_items(playlist_id=recents, items=[{'uri': item['track']['id'], 'positions': [0]},])
+            break
+        sp2.playlist_add_items(playlist_id=recents, items=[track])
+
+    return redirect("lander_get")
+
+def profile(request):
+    # You need to be logged in to view your profile.
+    # Redirect to the login page if the user is not logged in.
+    if not request.user.is_authenticated:
+        djangomessages.warning(request, ("You need to be logged in to view your profile."))
+        return redirect('login')
+
+    context = {}
+    form = FriendRequestForm()
+    if request.method == 'POST':
+        form = FriendRequestForm(request.POST)
+        if form.is_valid():
+            formrecipient = form.cleaned_data['recipient']
+            if User.objects.filter(email=formrecipient).exists():
+                if request.user.get_username() != formrecipient:
+                    recipient = User.objects.get(email = formrecipient)
+                    if recipient not in request.user.profile.friendList.all():
+                        if not FriendRequest.objects.filter(sender=request.user, recipient=recipient).exists():
+                            fr = FriendRequest(sender=request.user, recipient=recipient)
+                            fr.save()
+                            djangomessages.success(request, ("Your friend request was sent."))
+                        else:
+                            djangomessages.warning(request, ("You've already sent a friend request to that user."))
+                    else:
+                        djangomessages.warning(request, ("You're already friends with that user."))
+                else:
+                    djangomessages.warning(request, ("You can't send a friend request to yourself."))
+            else:
+                djangomessages.warning(request, ("Couldn't find that user to send a friend request to."))
+
+        else:
+            print(form.errors.as_data())
+
+    context['form'] = form
+    context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
+    return render(request, 'profile.html', context)
+
+def messageFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    recipient = friend.get_username()
+    return redirect('/messager/writemessage/' + recipient)
+
+def deleteFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    request.user.profile.friendList.remove(friend)
+    friend.profile.friendList.remove(request.user)
+    djangomessages.success(request, ('Friend deleted.'))
+    return redirect('profile')
+
+def acceptFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    sender = fr.sender
+    sender.profile.friendList.add(request.user)
+    request.user.profile.friendList.add(sender)
+    fr.delete()
+    djangomessages.success(request, ('Friend request accepted.'))
+    return redirect('profile')
+
+def denyFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    fr.delete()
+    djangomessages.success(request, ('Friend request denied.'))
+    return redirect('profile')

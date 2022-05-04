@@ -28,11 +28,17 @@ urlpatterns = [
     path('messager/', include('messager.urls')),
     path('search/', include('advanced.urls')),
     path('', views.lander_get, name='lander_get'),
-  # path('login', views.loginForm, name='login'),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(template_name='lander.html'), name='logout'),
     path('playlistContent/<playlistId>',views.updatePlaylistContent,name='content_display'),
     path('playlists/',views.updatePlaylistContent,name='content_display'),
+    path('playlists/createPlaylist/',views.createPlaylist,name='create_playlist'),
+    path('recent/<track>/',views.recent,name='recent'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/messagefriend/<friendId>', views.messageFriend,name='message_friend'),
+    path('profile/deletefriend/<friendId>', views.deleteFriend,name='delete_friend'),
+    path('profile/accept/<FRId>', views.acceptFriendRequest,name='accept_friend_request'),
+    path('profile/deny/<FRId>', views.denyFriendRequest,name='deny_friend_request'),
 
     #path('home/', INCOMPLETE PATH),
     #path('search/', INCOMPLETE PATH), #this will probably have a subpage for search/advanced, but both of them can redirect to plain old searchresults/
