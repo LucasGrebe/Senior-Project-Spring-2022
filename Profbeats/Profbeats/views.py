@@ -103,7 +103,7 @@ def createPlaylist(request):
 	new_playlist.owner=request.user
 	new_playlist.tracks=None
 	new_playlist.save()
-	return HttpResponseRedirect(request.path_info)
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def addToPlaylist(request):
 	if request.method == 'POST':
