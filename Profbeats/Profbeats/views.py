@@ -11,7 +11,7 @@ import random
 from spotipy import oauth2
 from django.contrib import messages as djangomessages
 
-from django.contrib.auth import logout
+from django.contrib.auth import logout,login
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
@@ -46,8 +46,17 @@ def find_tracks(songs):
         tracks.append(track)
     return tracks
 
-def createAccount(request):
-    pass
+def register_request(request):
+	if request.method == "POST":
+		form = NewUserForm(request.POST)
+		if form.is_valid():
+			user = form.save()
+			login(request, user)
+			djangomessages.success(request, "Registration successful." )
+			return redirect('lander_get')
+		djangomessages.error(request, "Unsuccessful registration. Invalid information.")
+	form = NewUserForm()
+	return render (request, 'signup.html', {"register_form":form})
 
 def loginForm(request):
     form = LoginForm()
