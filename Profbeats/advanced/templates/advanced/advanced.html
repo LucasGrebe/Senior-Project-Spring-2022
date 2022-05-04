@@ -1,67 +1,89 @@
 {% extends 'base.html' %}
 
+import math
+{% load static %}
+
 {% block title %} Advanced Search {% endblock %}
 
 {% block content %}
-<form method='post' action="{% url 'results' %}">
-    {% csrf_token %}
-    <br>
-    <center>
-        <h2>Playlist Search</h2>
-    </center>
-    
-    
-    <br>
-    <div>
-        Playlist Owner: {{ form.owner }}
-    </div>
-    <br>
-    
-    <br>
-    <div>
-        Playlist Title: {{ form.title }}
-    </div>
-    <br>
-    
- 
-    <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+<div id="advancedFormdiv">
+    <form id="advancedForm" method='post' action="{% url 'results' %}">
+        {% csrf_token %}
+        <br>
+        <center>
+            <h1>Playlist Search</h1>
+        </center>
+        <br />
 
-</form>
+        <table id="advancedFormTable">
+            <tr>
+                <td>Playlist Owner : </td>
+                <td>{{ form.owner }}</td>
+            </tr>
+            <tr>
+                <td>Playlist Title : </td>
+                <td>{{ form.title }}</td>
+            </tr>
+        </table>
+
+        <br />
+        <button class="btn btn-dark btn-lg" type="submit">Submit</button>
+
+    </form>
+</div>
 <br>
 
 {% if not playlists %}
 
 <br>
-    <div>
-        No results
-    </div>
-    <br>
+<div>
+    No results
+</div>
+<br>
+
 {% endif %}
 
 
 {% if playlists %}
-Here ya go
 <br>
-    <div>
-    </div>
-    <br>
-  
-    {% for playlist, content in playlists.items %}
+<div>
+</div>
+<br>
 
-    <body>
-        <div>
-            <img src="{{ playlist.img }}" class="img-fluid">
+{% for playlist in playlists %}
+
+<body>
+    <div>
+
+        <div class="playlistObject">
+             <p><a href="{% url 'content_display' playlist.id %}"> 
+            <img src="{% static 'Profbeats/images/midnightprom.jpg' %}" id="playlistcover" class="img-fluid">
             <br>
+        </a></p> 
             Title: {{ playlist.title }}
             <br>
-            Owner: {{ playlist.owner }}
-            <form method='post' action="{% url 'content_display' playlist.id %}">
-                {% csrf_token %}
-                <center>
-                    <h2>Rate this playlist!</h2>
-                </center>
-                <br>
-                Playlist Rating: {{playlist.aggRating}}
+            Owner: {{playlist.owner }}
+            <br>
+            Playlist Rating: {{playlist.aggRating}}
+            
+            <div class="review-feedback">
+
+
+            </div>
+
+
+        </div>
+        </br>
+        </br>
+        </br>
+
+        <form method='post' action="{% url 'content_display' playlist.id %}">
+            {% csrf_token %}
+            <center>
+                <h1>Rate this playlist!</h1>
+            </center>
+            <div class="playlistRate">
+
                 <br>
                 <input type="hidden" name="target" value="{{ playlist.id }}">
                 {{f_prate.rating}}
@@ -69,77 +91,96 @@ Here ya go
                 Rater: <br>
                 {{f_prate.prated_by}}
                 <br>
-                <button class="btn btn-primary btn-lg" type="submit" name="rate_playlist">Rate</button>
-            </form>
-        </div>
-        <table class="table">
-            <tbody>
-                <tr>
-                    {% firstof playlist as playkey %}
-                    {% for song in content %}
-                    
-                   The song id is {{ song.id }}
-                    <td>
-                        <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
+
+                <button class="btn btn-dark btn-lg" type="submit" name="rate_playlist">Rate</button>
+            </div>
+        </form>
+    </div>
+    <table class="table" id="rateTable2">
+        <tbody>
+            <tr>
+                {% for song in content %}
+
+                <p id="rateTable3">The song id is {{ song.id }}</p>
+                <td>
+                    <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
                         frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    <br>
+                    Song Rating: {{ song.aggRating }}
+                    <form method="post" action="{% url 'content_display' playlist.id %}">
+                        {% csrf_token %}
                         <br>
-                        Song Rating: {{ song.aggRating }}
-                        <form method="post" action="{% url 'content_display' playlist.id %}">
-                            {% csrf_token %}
-                            <br>
-                            <input type="hidden" name="target" value="{{ song.id }}">
-                            {{f_trate.rating}}
-                            <br>
-                            Rater: <br>
-                            {{f_trate.trated_by}}
-                            <br>
-                            <button class="btn btn-primary btn-lg" type="submit" name="rate_track">Rate</button>
-                        </form>
-                    </td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-        {% for comment in comments %}
-        <div class="comment" style="padding: 10px;">
-            <p class="font-weight-bold">
-                {{comment.created_by}}
-                <span class="text-muted font-weight-normal">
-                    {{comment.created_on}}
-                </span>
-            </p>
-            {{comment.body|linebreaks}}
-        </div>
-        {% endfor %}
-        <form method='post' action="{% url 'content_display' playlist.id %}">
-            {% csrf_token %}
-            <br>
-            <center>
-                <h2>Join the conversation!</h2>
-            </center>
-            <br>
-            <div>
-                User: <br>
-                {{ f_comment.created_by }}
-            </div>
-            <br>
-            <div>
-                Comment: <br>
-                {{ f_comment.body }}
-            </div>
-            <br>
-            <button class="btn btn-primary btn-lg" type="submit" name="post_comment">Submit</button>
-            </form>
-            <br>
-    </body>
-        
-
-    
-    
+                        <input type="hidden" name="target" value="{{ song.id }}">
+                        {{f_trate.rating}}
+                        <br>
+                        Rater: <br>
+                        {{f_trate.trated_by}}
+                        <br>
+                        <button class="btn btn-dark btn-lg" type="submit" name="rate_track">Rate</button>
+                    </form>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% for comment in comments %}
+    <div class="comment" style="padding: 10px;">
+        <p class="font-weight-bold">
+            {{comment.created_by}}
+            <span class="text-muted font-weight-normal">
+                {{comment.created_on}}
+            </span>
+        </p>
+        {{comment.body|linebreaks}}
+    </div>
     {% endfor %}
+    <form method='post' action="{% url 'content_display' playlist.id %}">
+        {% csrf_token %}
+        <br>
+        <center>
+            <h1>Join the conversation!</h1>
+        </center>
+        <br>
 
+        <div class="commentDiv">
+            User: <br>
+            {{ f_comment.created_by }}
+        </div>
+        <br>
+        <div class="commentDiv">
+            Comment: <br>
+            {{ f_comment.body }}
+        </div>
+        <br>
+        <button class="btn btn-dark btn-lg" type="submit" name="post_comment">Submit</button>
+    </form>
+    <br>
+
+    <style>
+        .playlistObject {
+
+            font-weight: bold;
+            font-size: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+        }
+
+        #advancedFormTable,
+        #rateTable2,
+        #rateTable3,
+        .playlistRate,
+        .commentDiv {
+            font-size: 2vw;
+        }
+    </style>
+</body>
+
+
+
+
+{% endfor %}
 {% endif %}
-
-
-
 {% endblock %}

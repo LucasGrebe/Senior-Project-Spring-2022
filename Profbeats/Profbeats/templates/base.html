@@ -234,12 +234,25 @@ a:visited {
     text-decoration: none;
 }
 
-#formdiv {
+#loginFormdiv {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 9vw;
+}
+
+#advancedFormdiv, #advancedForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2vw;
+}
+
+#advancedFormTable td{
+    padding: .5vw;
+    padding-left: .5vw;
 }
 
 .playlistinfo {
@@ -352,7 +365,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
             <div class="container-fluid">
                 <!--href may need to be changed here-->
                 <a class="navbar-brand" href="{% url 'lander_get' %}">
-                    <img src="image.png" id="profbeatslogo">
+                    <img src="{% static 'Profbeats/images/image.png' %}" id="profbeatslogo">
                     ProfBeats
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -361,7 +374,8 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'advsearch' %}">Playlist Search</a>
+                            <a class="nav-link" href="{% url 'advsearch' %}">Advanced Search</a>
+
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'profile' %}">Profile</a>
@@ -376,12 +390,10 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'messager:messages' %}">Messaging</a>
+                        </li>
 
-                     {% else %}
-                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                     {% endif %}
                         
                         <!-- </ul>
                     <form class="d-flex" method="GET" action="{% url 'omniresults' %}">
@@ -426,7 +438,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
             <a class="nav-link" href="{% url 'messager:messages' %}">Messager</a>
           </li>
           <li class="nav-item dropdown">
-
+            <!DROPDOWN LINK AND SUBACTIONS HERE, TBD>
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown
             </a>

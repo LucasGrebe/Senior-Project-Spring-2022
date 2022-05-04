@@ -32,7 +32,7 @@
     {% endfor %}
 {% endif %}
 
-<div id="formdiv">
+<div id="loginFormdiv">
     <form id="login-form" method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <table>
@@ -62,3 +62,6 @@
 </div>
 
 {% endblock %}
+
+
+

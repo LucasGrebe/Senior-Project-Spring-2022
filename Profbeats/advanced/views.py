@@ -17,8 +17,7 @@ client_credentials_manager = oauth2.SpotifyClientCredentials(client_id=cid, clie
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 spOAuth = oauth2.SpotifyOAuth(client_id=cid, client_secret=secret, redirect_uri='http://127.0.0.1:8000/')
-
-
+import random
     
 def find_spotipy(artist):
     to_pass = 'artist,album,track,playlist,show,episode'
@@ -28,7 +27,6 @@ def find_spotipy(artist):
 
 
 def advanced_find(owner, title):
-
     if(len(owner) != 0):
         
         try: 
@@ -60,6 +58,7 @@ def advanced_find(owner, title):
                 return None
         return results
     return None
+  
 @require_POST
 def advanced_post(request):
      # create a form instance and populate it with data from the request:
@@ -75,6 +74,7 @@ def advanced_post(request):
             owner,
             title
     )
+
         playlists = {}
         if(answer is not None):
             for playlist in answer:
@@ -88,12 +88,10 @@ def advanced_post(request):
 
 
 
+@require_GET
 def advanced_get(request):
     form = AdvancedForm()
     return render(request, 'advanced/advanced.html', {'form': form})
-
-
-
 
 def omni_get(request):
 
@@ -151,5 +149,3 @@ def omni_get(request):
     else:
         answer = 3
         raise Http404('Form was invalid')
-
-
