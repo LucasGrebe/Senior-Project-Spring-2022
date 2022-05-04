@@ -5,6 +5,20 @@ import users.forms as uforms
 from .models import Comment, PRating,Playlist, TPR_Meta, TRating, Track
 # NOTE: SOME MODELS MAY NEED TO BE IMPORTED DIRECTLY
 
+class NewUserForm(uforms.UserCreationForm):
+	email = forms.EmailField(required=True)
+
+	class Meta:
+		model = User
+		fields = ("username", "email", "password1", "password2")
+
+	def save(self, commit=True):
+		user = super(NewUserForm, self).save(commit=False)
+		user.email = self.cleaned_data['email']
+		if commit:
+			user.save()
+		return user
+
 class LoginForm(forms.Form):
     email = forms.CharField(widget=forms.TextInput)
     password = forms.CharField(widget=forms.PasswordInput)
