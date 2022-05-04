@@ -3,7 +3,7 @@
 {% block title %} ProfBeats {% endblock %}
 
 {% block content %}
-
+{% load static %}
 
 <div id="mainpage">
     <div id="welcomeRow">
@@ -189,13 +189,13 @@
 
     <div id="secondRow">
         <div class="row2boxes" id="row2left">
-            <img src="headphonesIcon.png" class="row2Icons" alt="Icon - headphones">
+            <img src="{% static 'Profbeats/images/headphonesIcon.png' %}" class="row2Icons" alt="Icon - headphones">
             <br/>
             <h4 class="row2textHead">Listen to all the new stuff</h4>
             <p class="row2textBody">See what everyone is listening to now</p>
         </div>
         <div class="row2boxes" id="row2right">
-            <img src="convoIcon.png" class="row2Icons" alt="Icon - conversation">
+            <img src="{% static 'Profbeats/images/convoIcon.png' %}" class="row2Icons" alt="Icon - conversation">
             <br/>
             <h4 class="row2textHead">Converse with like-minded audiophiles</h4>
             <p class="row2textBody">Talk to our community and join the conversation</p>
@@ -204,7 +204,7 @@
 
     <div id="thirdRow">
         <div class="row3boxes" id="row3left">
-            <img src="image.png" id="comingsoonlogo" alt="ProfBeats Logo">
+            <img src="{% static 'Profbeats/images/image.png' %}" id="comingsoonlogo" alt="ProfBeats Logo">
         </div>
         <div class="row3boxes" id="row3right">
             <h3>Great changes are coming</h3>
