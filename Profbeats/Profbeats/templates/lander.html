@@ -103,6 +103,7 @@
 
     <div id="recommendRow">
         {% if not recently_listened_to %}
+            {% if not_logged_in %}
             <h1>Check out what's popular</h1>
             <table class="table">
                 <tbody>
@@ -119,6 +120,25 @@
                 </tr>
                 </tbody>
                 </table>
+        {% else %}
+        <h1>Check out what's popular</h1>
+        <table class="table">
+            <tbody>
+            {% for tracks in tracksall %}
+            <tr>
+            {% for track in tracks %}
+            <td>
+            <iframe src="https://open.spotify.com/embed/track/{{ track }}" width="300" height="380" 
+            frameborder="10" allowtransparency="true" allow="encrypted-media"></iframe>
+            <div class="col m-2 text-left"><a class="btn btn-secondary" href="{% url 'recent' track %}">Add to Recents</a></div>
+            </td>
+            {% endfor %}
+            </tr>
+            {% endfor %}
+            </tr>
+            </tbody>
+            </table>
+            {% endif %}
         {% else %}
         {% if tracksall %}
         <table class="table">

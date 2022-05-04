@@ -179,6 +179,11 @@ def lander_get(request):
         for i in range(0, 1000, 4):
             tracksall.append(tracks[i:i+4])
         return render(request, 'lander.html', {'tracksall': tracksall, 'not_logged_in': True})
+    elif not request.user.profile.recents:
+        tracks = find_tracks([])
+        for i in range(0, 1000, 4):
+            tracksall.append(tracks[i:i+4])
+        return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': []})
     recently_listened_to = sp.playlist(request.user.profile.recents.spotify_link[34:])
     recently_listened_to_tracks = []
     for item in recently_listened_to['tracks']['items']:
@@ -194,16 +199,20 @@ def lander_get(request):
     if not temp:
         return render(request, 'lander.html', {'tracksall': tracksall})
     return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to_tracks})
+
 token = util.prompt_for_user_token(username='9indqdxoj2o45azyfw4ebz5ux',scope='playlist-modify-private',client_id='44dbdabeed3d42eba9abf16a4159c53e',client_secret='139765ae1bb445b2abfb6799e1698072', redirect_uri='http://127.0.0.1:8000/')
 def recent(request, track):
     print("HERE TRACK", track)
     if token:
         print("HERE TOKEN")
         sp2 = spotipy.Spotify(auth=token)
+        if not request.user.profile.recents:
+            request.user.profile.recents = Playlist()
         recents = request.user.profile.recents.spotify_link[34:]
         playlist = sp2.playlist(recents)
         for item in playlist['tracks']['items']:
-            sp2.playlist_remove_specific_occurrences_of_items(playlist_id=recents, items=[{'uri': item['track']['id'], 'positions': [0]},])
+            if len(playlist['tracks']['items']) > 4:
+                sp2.playlist_remove_specific_occurrences_of_items(playlist_id=recents, items=[{'uri': item['track']['id'], 'positions': [0]},])
             break
         sp2.playlist_add_items(playlist_id=recents, items=[track])
 
