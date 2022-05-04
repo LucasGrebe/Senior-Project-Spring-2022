@@ -6,6 +6,14 @@ from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
 
+from django.shortcuts import render,redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render
+from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
+import random
+from spotipy import oauth2
+from django.contrib import messages as djangomessages
 from django.contrib.auth import logout
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
