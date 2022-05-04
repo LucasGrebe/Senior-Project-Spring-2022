@@ -21,12 +21,12 @@ class PlaylistForm(forms.ModelForm):
     aggRating=forms.FloatField(max_value=5.0,min_value=0.0,initial=0.0)
     class Meta:
         model=Playlist
-        fields=('title','spotify_link','img','aggRating','owner','tracks')
+        fields=('title','spotify_link','img','owner')
 
-class AddToPlaylistForm(forms.ModelForm):
+class EditPlaylistForm(forms.ModelForm):
     class Meta:
         model=TPR_Meta
-        fields=('track','playlist')
+        fields=('track','title','playlist','img')
 
 class PlaylistRatingForm(forms.ModelForm):
     class Meta:
