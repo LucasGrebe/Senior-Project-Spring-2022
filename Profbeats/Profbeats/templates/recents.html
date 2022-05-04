@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <body>
+        <br/>
+        <div class="playlistObject">
+            <img src="{% static 'Profbeats/images/midnightprom.jpg' %}" class="img-fluid">
+            <br/>
+            <!-- Should say "Recents" -->
+            Title: {{ playlist.title }}
+        </div>
+        <br/>
+        <table class="table">
+            <tbody>
+                <tr>
+                    {% for song in content %}
+                    <td>
+                        <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
+                            frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        <br>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    <table class="table">
+        <tbody>
+            <tr>
+                {% for song in content %}
+                    <td>
+                        <iframe src="https://open.spotify.com/embed/track/{{ song.id }}" width="400" height="100"
+                        frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% for comment in comments %}
+    <div class="comment" style="padding: 10px;">
+        <p class="font-weight-bold">
+            {{comment.created_by}}
+            <span class="text-muted font-weight-normal">
+                {{comment.created_on}}
+            </span>
+        </p>
+        {{comment.body|linebreaks}}
+    </div>
+    {% endfor %}
+    
+    <br/>
+    </body>
+
+{%endblock%}
+
+        <style>
+            * {
+                font-size: 20px;
+            }
+
+            .playlistObject {
+                font-weight: bold;
+                font-size: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .checked {
+                color: orange;
+            }
+        </style>
+
+{%endblock%}
