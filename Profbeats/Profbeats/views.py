@@ -176,3 +176,66 @@ def recent(request, track):
         sp2.playlist_add_items(playlist_id=recents, items=[track])
 
     return redirect("lander_get")
+def profile(request):
+    # You need to be logged in to view your profile.
+    # Redirect to the login page if the user is not logged in.
+    if not request.user.is_authenticated:
+        djangomessages.warning(request, ("You need to be logged in to view your profile."))
+        return redirect('login')
+
+    context = {}
+    form = FriendRequestForm()
+    if request.method == 'POST':
+        form = FriendRequestForm(request.POST)
+        if form.is_valid():
+            formrecipient = form.cleaned_data['recipient']
+            if User.objects.filter(email=formrecipient).exists():
+                if request.user.get_username() != formrecipient:
+                    recipient = User.objects.get(email = formrecipient)
+                    if recipient not in request.user.profile.friendList.all():
+                        if not FriendRequest.objects.filter(sender=request.user, recipient=recipient).exists():
+                            fr = FriendRequest(sender=request.user, recipient=recipient)
+                            fr.save()
+                            djangomessages.success(request, ("Your friend request was sent."))
+                        else:
+                            djangomessages.warning(request, ("You've already sent a friend request to that user."))
+                    else:
+                        djangomessages.warning(request, ("You're already friends with that user."))
+                else:
+                    djangomessages.warning(request, ("You can't send a friend request to yourself."))
+            else:
+                djangomessages.warning(request, ("Couldn't find that user to send a friend request to."))
+
+        else:
+            print(form.errors.as_data())
+
+    context['form'] = form
+    context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
+    return render(request, 'profile.html', context)
+
+def messageFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    recipient = friend.get_username()
+    return redirect('/messager/writemessage/' + recipient)
+
+def deleteFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    request.user.profile.friendList.remove(friend)
+    friend.profile.friendList.remove(request.user)
+    djangomessages.success(request, ('Friend deleted.'))
+    return redirect('profile')
+
+def acceptFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    sender = fr.sender
+    sender.profile.friendList.add(request.user)
+    request.user.profile.friendList.add(sender)
+    fr.delete()
+    djangomessages.success(request, ('Friend request accepted.'))
+    return redirect('profile')
+
+def denyFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    fr.delete()
+    djangomessages.success(request, ('Friend request denied.'))
+    return redirect('profile')
