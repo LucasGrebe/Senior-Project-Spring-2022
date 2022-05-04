@@ -286,9 +286,15 @@ def profile(request):
 		else:
 			print(form.errors.as_data())
 
+	context['recent'] = request.user.profile.recents
+	context['favorites'] = request.user.profile.favorites
+	context['playlists'] = request.user.playlists.all()
 	context['form'] = form
 	context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
 	return render(request, 'profile.html', context)
+
+def getUserPlaylists(request):
+
 
 def messageFriend(request, friendId):
 	friend = User.objects.get(pk=friendId)

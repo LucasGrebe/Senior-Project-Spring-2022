@@ -79,4 +79,12 @@
 <center><h6>Your friend list is empty!</h6></center>
 {% endif %}
 <br>
+{% for playlist in playlists %}
+<table>
+  <tr>
+    <td>{{ playlist.title }}</td>
+    <td><a class="btn btn-secondary" href="{% url 'content_display' playlist.id %}">Edit Playlist</a></td>
+  </tr>
+</table>
+{% endfor %}
 {% endblock %}
