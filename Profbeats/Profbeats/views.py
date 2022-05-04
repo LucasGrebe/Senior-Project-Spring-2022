@@ -180,6 +180,11 @@ def profile(request):
     context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
     return render(request, 'profile.html', context)
 
+def messageFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    recipient = friend.get_username()
+    return redirect('/messager/writemessage/' + recipient)
+
 def deleteFriend(request, friendId):
     friend = User.objects.get(pk=friendId)
     request.user.profile.friendList.remove(friend)

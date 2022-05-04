@@ -41,16 +41,15 @@
     <thead>
         <tr>
           <th scope="col">Email</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+          <th></th>
           </tr>
         </thead>
         <tbody>
     {% for fr in friend_request_list %}
       <tr>
         <td>{{ fr.sender }}</td>
-        <td><div class="col"><a class="btn btn-secondary" href="{% url 'accept_friend_request' fr.id %}">Accept</a></div></td>
-        <td><div class="col"><a class="btn btn-danger" href="{% url 'deny_friend_request' fr.id %}">Deny</a></div></td>
+        <td colspan="2" class="text-right"><a class="btn btn-success" href="{% url 'accept_friend_request' fr.id %}">Accept</a>
+          <a class="btn btn-danger" href="{% url 'deny_friend_request' fr.id %}">Deny</a></td>
       </tr>
     {% endfor %}
     </tbody>
@@ -63,14 +62,15 @@
         <thead>
           <tr>
             <th scope="col">Email</th>
-            <th scope="col"></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
     {% for friend in request.user.profile.friendList.all %}
       <tr>
         <td>{{ friend }}</td>
-        <td><div class="col"><a class="btn btn-danger" href="{% url 'delete_friend' friend.id %}">Delete</a></div></td>
+        <td class="text-right"><a class="btn btn-secondary" href="{% url 'messager:writemessage_r' friend.get_username %}">Send a Message</a>
+          <a class="btn btn-danger" href="{% url 'delete_friend' friend.id %}">Delete</a></td>
       </tr>
     {% endfor %}
     </tbody>

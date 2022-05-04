@@ -3,15 +3,6 @@ from django.db import models
 from django.db.models import *
 from users.models import CustomUser as User
 
-# Models the advanced user profile settings and features
-class UserProfile(Model):
-    user=OneToOneField(User,on_delete=CASCADE,related_name='profile')
-
-    THEMES=[('light','LIGHT'),('dark','DARK')]
-    themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
-    friendList=ManyToManyField(User,related_name='friends',blank=True)
-    friendRequests = []
-
 # Model of the track and it's fields. Note this is not final and can be subject to change
 # The track list locally stores all songs that belong to user-generated playlists (necessary if we cannot link accounts directly to spotify)
 class Track(models.Model):
@@ -72,8 +63,8 @@ class UserProfile(Model):
     THEMES=[('light','LIGHT'),('dark','DARK')]
     themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
     friendList=ManyToManyField(User,related_name='friends',blank=True)
-    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True)
-    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True)
+    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True,null=True)
+    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True,null=True)
 
 # Meta class representing the relationship between tracks and playlists. (T)rack-(P)laylist-(R)elationship Meta class
 # Each TPR_Meta represents the relationship between a track and a playlist, and features the time it was added to the list.
@@ -100,6 +91,10 @@ class Comment(Model):
 
     def __str__(self):
         return 'Comment {} by {}'.format(self.body,self.created_by.username)
+
+class FriendRequest(models.Model):
+    sender=ForeignKey(User,related_name='sender',on_delete=CASCADE)
+    recipient=ForeignKey(User,related_name='recipient',on_delete=CASCADE)
 
 # class Musicdata(models.Model):
 #     acousticness = models.FloatField()
