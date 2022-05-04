@@ -63,8 +63,8 @@ class UserProfile(Model):
     THEMES=[('light','LIGHT'),('dark','DARK')]
     themeChoice=CharField(max_length=10,choices=THEMES,blank=True,null=True)
     friendList=ManyToManyField(User,related_name='friends',blank=True)
-    favorites=OneToOneField(Playlist,on_delete=CASCADE,related_name='favorites',blank=True,null=True)
-    recents=OneToOneField(Playlist,on_delete=CASCADE,related_name='recents',blank=True,null=True)
+    favorites=ForeignKey(Playlist,on_delete=CASCADE,related_name='favorites',blank=True,null=True,unique=True)
+    recents=ForeignKey(Playlist,on_delete=CASCADE,related_name='recents',blank=True,null=True,unique=True)
 
 # Meta class representing the relationship between tracks and playlists. (T)rack-(P)laylist-(R)elationship Meta class
 # Each TPR_Meta represents the relationship between a track and a playlist, and features the time it was added to the list.
