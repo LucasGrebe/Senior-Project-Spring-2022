@@ -1,3 +1,4 @@
+from email.policy import default
 from django import forms
 from Profbeats.models import Comment, PRating,Playlist, TRating, Track
 from users.models import CustomUser as User
@@ -48,6 +49,9 @@ class AdvancedForm(forms.Form):
         model=Playlist
         fields=('title','spotify_link','img','aggRating','owner','tracks')
 
+class OmniSearchForm(forms.Form):
+    searchfield=forms.CharField(required=True,widget=forms.TextInput(attrs={'size': '50'}))
+    
 class AdvancedSongForm(forms.Form):
     sort = forms.CharField(required=False,label='Sort', widget=forms.Select(choices=SORT_CRITERIA))
     #genre = forms.CharField(widget=forms.TextInput(attrs={'size': '50'}))

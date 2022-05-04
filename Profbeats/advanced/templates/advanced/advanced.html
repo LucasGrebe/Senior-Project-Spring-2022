@@ -40,11 +40,11 @@ import math
     No results
 </div>
 <br>
+
 {% endif %}
 
 
 {% if playlists %}
-
 <br>
 <div>
 </div>
@@ -83,6 +83,7 @@ import math
                 <h1>Rate this playlist!</h1>
             </center>
             <div class="playlistRate">
+
                 <br>
                 <input type="hidden" name="target" value="{{ playlist.id }}">
                 {{f_prate.rating}}
@@ -90,6 +91,7 @@ import math
                 Rater: <br>
                 {{f_prate.prated_by}}
                 <br>
+
                 <button class="btn btn-dark btn-lg" type="submit" name="rate_playlist">Rate</button>
             </div>
         </form>
@@ -180,9 +182,5 @@ import math
 
 
 {% endfor %}
-
 {% endif %}
-
-
-
 {% endblock %}

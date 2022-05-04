@@ -1,7 +1,7 @@
-from re import A
 from .forms import *
-from django.shortcuts import render,get_object_or_404
-from django.http import Http404,JsonResponse
+from django.shortcuts import render,redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render
 from .models import *
 from django.views.decorators.http import require_POST, require_GET
 import spotipy
@@ -9,7 +9,13 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import random
 from spotipy import oauth2
+from django.contrib import messages as djangomessages
 
+from django.contrib.auth import logout
+from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
+import random
+from spotipy import oauth2
 cid = '44dbdabeed3d42eba9abf16a4159c53e'
 secret = '139765ae1bb445b2abfb6799e1698072'
 client_credentials_manager = oauth2.SpotifyClientCredentials(client_id=cid, client_secret=secret)
@@ -40,85 +46,41 @@ def find_tracks(songs):
         tracks.append(track)
     return tracks
 
-def Search(name, explicit, tempoMin = None, tempoMax = None, durMin = None, durMax = None ):
-    query = Musicdata.objects.filter(name__contains = name)
-    print(explicit)
-    if tempoMin is not None:
-        query = query.filter(tempo__gte = tempoMin)
-    if tempoMax is not None:
-        query = query.filter(tempo__lte = tempoMax)
-    if durMin is not None:
-        query = query.filter(duration_ms__gte = durMin * 60000)
-    if durMax is not None:
-        query = query.filter(duration_ms__lte = durMax * 60000)
-    if not explicit:
-        query = query.filter(explicit__lte = 0)
-    return list(query.order_by('-popularity').values('id','name','year', 'tempo', 'duration_ms'))
-
-
-def searchForm(request):
-      # create a form instance and populate it with data from the request:
-    form = SearchForm(request.POST)
-    ##sort_form = SortForm(request.POST)
-    # check whether it's valid:
-    if form.is_valid():
-        # process the data in form.cleaned_data as required
-        
-        sort = form.cleaned_data['sort']
-        tempo = form.cleaned_data['tempo']
-
-        if(tempo == 'slow'):
-            tempoMin = 20
-            tempoMax = 99
-        elif(tempo == 'medium'):
-            tempoMin = 100
-            tempoMax = 149
-        elif(tempo == 'fast'):
-            tempoMin = 150
-            tempoMax = 250
-        else:
-            tempoMin = 0
-            tempoMax = 500
-        explicit = form.cleaned_data['explicit']
-        
-        durMin = form.cleaned_data['durMin'] 
-        durMax = form.cleaned_data['durMax']
-        albums = Search(
-                form.cleaned_data['name'],
-                explicit,
-                tempoMin,
-                tempoMax,
-                durMin,
-                durMax,
-                
-                
-            )
-        
-        # Random 3 of top 10 popular albums
-        answer = albums
-        random.shuffle(answer)
-        answer = list(answer)[:7]
-        #x = 1/0
-        
-        if(sort != 'random' and sort != ''):
-            answer = sorted(answer, key = lambda i: i[sort])
-        return render(request, 'recommender/advanced.html', {'form': form, 'albums': answer })
-    else:
-        raise Http404('Something went wrong')
-
-def createAccountForm(request):
+def createAccount(request):
     pass
 
 def loginForm(request):
     form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
-def createPlaylistForm(request):
-    pass
+def logout_view(request):
+    logout(request)
+    # Redirect to a success page.
 
-def comments(request,playlistId,userId):
-    pass
+def createPlaylist(request):
+    f_playlist = PlaylistForm(request)
+    new_playlist = f_playlist.save(commit=False)
+    new_playlist.title="Untitled"
+    new_playlist.aggRating=0.0
+    new_playlist.image=None
+    new_playlist.owner=request.user
+    new_playlist.tracks=None
+    new_playlist.save()
+    return HttpResponseRedirect(request.path_info)
 
+def addToPlaylist(request):
+    if request.method == 'POST':
+        f_TPR = AddToPlaylistForm(request.POST)
+        new_TPR = None
+        if f_TPR.is_valid():
+            new_TPR=f_TPR.save(commit=False)
+            new_TPR.save()
+        else:
+            raise Http404('Cannot add the same song to a playlist twice')
+    return HttpResponseRedirect(request.path_info)
+
+def updatePlaylist(request):
+    pass
 
 ### Universal Handler Function for the playlistContent.html webpage ###
 def updatePlaylistContent(request,playlistId):
@@ -177,7 +139,6 @@ def recommend_get(request):
     form = ArtistForm()
     return render(request, 'recommender/searchformRecommendations.html', {'form': form})
 
-
 def lander_get(request):
     tracksall = []
     recently_listened_to = ['7CMVo848b9LsUtVavIoiXC', '5tUfJOqyiROxClednTF2FC', '7AYSl3u70hJ402o0u0gry5', '3jgHOTLHVfPI7twjEobWcC']
@@ -185,3 +146,67 @@ def lander_get(request):
     for i in range(0, 1000, 4):
         tracksall.append(tracks[i:i+4])
     return render(request, 'lander.html', {'tracksall': tracksall, 'recently_listened_to': recently_listened_to})
+
+def profile(request):
+    # You need to be logged in to view your profile.
+    # Redirect to the login page if the user is not logged in.
+    if not request.user.is_authenticated:
+        djangomessages.warning(request, ("You need to be logged in to view your profile."))
+        return redirect('login')
+
+    context = {}
+    form = FriendRequestForm()
+    if request.method == 'POST':
+        form = FriendRequestForm(request.POST)
+        if form.is_valid():
+            formrecipient = form.cleaned_data['recipient']
+            if User.objects.filter(email=formrecipient).exists():
+                if request.user.get_username() != formrecipient:
+                    recipient = User.objects.get(email = formrecipient)
+                    if recipient not in request.user.profile.friendList.all():
+                        if not FriendRequest.objects.filter(sender=request.user, recipient=recipient).exists():
+                            fr = FriendRequest(sender=request.user, recipient=recipient)
+                            fr.save()
+                            djangomessages.success(request, ("Your friend request was sent."))
+                        else:
+                            djangomessages.warning(request, ("You've already sent a friend request to that user."))
+                    else:
+                        djangomessages.warning(request, ("You're already friends with that user."))
+                else:
+                    djangomessages.warning(request, ("You can't send a friend request to yourself."))
+            else:
+                djangomessages.warning(request, ("Couldn't find that user to send a friend request to."))
+
+        else:
+            print(form.errors.as_data())
+
+    context['form'] = form
+    context['friend_request_list'] = FriendRequest.objects.filter(recipient=request.user)
+    return render(request, 'profile.html', context)
+
+def messageFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    recipient = friend.get_username()
+    return redirect('/messager/writemessage/' + recipient)
+
+def deleteFriend(request, friendId):
+    friend = User.objects.get(pk=friendId)
+    request.user.profile.friendList.remove(friend)
+    friend.profile.friendList.remove(request.user)
+    djangomessages.success(request, ('Friend deleted.'))
+    return redirect('profile')
+
+def acceptFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    sender = fr.sender
+    sender.profile.friendList.add(request.user)
+    request.user.profile.friendList.add(sender)
+    fr.delete()
+    djangomessages.success(request, ('Friend request accepted.'))
+    return redirect('profile')
+
+def denyFriendRequest(request, FRId):
+    fr = FriendRequest.objects.get(pk=FRId)
+    fr.delete()
+    djangomessages.success(request, ('Friend request denied.'))
+    return redirect('profile')

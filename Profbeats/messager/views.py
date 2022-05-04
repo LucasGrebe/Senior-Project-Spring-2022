@@ -31,37 +31,18 @@ def deletemessage(request, message_id):
     djangomessages.success(request, ('Message deleted.'))
     return redirect('messager:messages')
 
-def writemessage(request):
+def writemessage(request, recipient=None, subject=None):
     context = {}
+    if recipient is not None:
+        context['recipient'] = recipient
+    if subject is not None:
+        context['subject'] = 'RE: ' + subject
 
     # You need to be logged in to write messages.
     # Redirect to the login page if the user is not logged in.
     if not request.user.is_authenticated:
         djangomessages.warning(request, ("You need to be logged in to read and send messages."))
         return redirect('login')
-
-    if request.method == 'POST':
-        form = MessageForm(request.POST)
-
-        if form.is_valid():
-            msg = form.save(commit=False)
-            msg.sender = request.user.get_username()
-            if not msg.subject:
-                msg.subject = "(no subject)"
-            msg.save()
-            djangomessages.success(request, ("Your message was sent."))
-            return redirect('messager:messages')
-
-        else:
-            print(form.errors.as_data())
-
-    else:
-        form = MessageForm()
-        context['form'] = form
-    return render(request, 'messager/writemessage.html', context)
-
-def replymessage(request, recipient, subject):
-    context = {'recipient' : recipient, 'subject' : 'RE: ' + subject}
 
     if request.method == 'POST':
         form = MessageForm(request.POST)

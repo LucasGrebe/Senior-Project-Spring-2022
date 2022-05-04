@@ -48,7 +48,7 @@
         </div>
         {% endif %}
         <div class="row border mb-4">
-            <div class="col m-2 text-left"><a class="btn btn-secondary" href="{% url 'messager:replymessage' msg.sender msg.subject %}">Reply</a></div>
+            <div class="col m-2 text-left"><a class="btn btn-secondary" href="{% url 'messager:writemessage_rs' msg.sender msg.subject %}">Reply</a></div>
             <div class="col m-2 text-right"><a class="btn btn-danger" href="{% url 'messager:deletemessage' msg.id %}">Delete</a></div>
         </div>
     {% endfor %}
